@@ -5,11 +5,20 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 class Program
 {
+    static IMongoCollection<BsonDocument> usersCollection;
+
     static void Main(string[] args)
     {
+        // Set up MongoDB connection
+        MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
+        IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
+        usersCollection = database.GetCollection<BsonDocument>("users");
+
         // List to store connected client sockets
         List<Socket> sockets = new List<Socket>();
         // Server's IP address (localhost in this case)
@@ -75,6 +84,9 @@ class Program
                 string username = parts[1];
                 string password = parts[2];
 
+                // Insert user into MongoDB
+                InsertUser(username, password);
+
                 // Process the account creation request (you may want to add more validation)
                 Console.WriteLine($"Creating account for user: {username} with password: {password}");
 
@@ -82,6 +94,7 @@ class Program
                 string response = "Kontot är nu registrerat!";
                 byte[] responseData = Encoding.UTF8.GetBytes(response);
                 client.Send(responseData);
+
 
                 break;
 
@@ -92,4 +105,17 @@ class Program
                 break;
         }
     }
+    static void InsertUser(string username, string password)
+    {
+        var document = new BsonDocument
+            {
+                { "username", username },
+                { "password", password }
+            };
+
+        usersCollection.InsertOne(document);
+
+        Console.WriteLine($"User {username} inserted into MongoDB.");
+    }
 }
+

@@ -20,7 +20,19 @@ a. Recieve the new user information.(Tog bort dubletter, servern blev forvirrad 
 b. Server sends a confirmation response to the client that the user is created Display on Client Console. ()string response = "Kontot är nu registrerat!";
 c. Server Console prints out a message: Console.WriteLine($"Creating account for user: {username} with password: {password}");
 
-NEXT STEP: Connect the server with database and store usernames and passwords.
+6. MONGODB
+a. Download in terminal: dotnet add package MongoDB.Driver
+b. Added Using keyword for MongoDB
+c. Created a container in Docker Desktop called ChatApp - assigned a port(Was'nt bound port automatically causing the code not contiued because no connection wihrt DB ). 
+d. Initiated a collection called users & Bson Docker: static IMongoCollection<BsonDocument> usersCollection;
+e.  // Set up MongoDB connection
+        MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
+        IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
+        usersCollection = database.GetCollection<BsonDocument>("users");
 
+f. Created a function InsertUser to save user and user info to the Database. 
+g. Called the function InsertUser in the CREATE_ACCOUNT switch.
+-- If things doenst work on wednesday, check that the port is still there etc 
 
+NEXT TIME: LOGIN FUNCTION
 
