@@ -11,6 +11,9 @@ a. Used Williams poll example.
 a. Based of Williams poll server.
 
 
+4. CREATE MAIN MENU
+a. In Client
+
 
 
 

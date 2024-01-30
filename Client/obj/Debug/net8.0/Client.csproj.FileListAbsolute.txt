@@ -12,3 +12,4 @@
 /Users/jasmine/ChatAppC#/Client/obj/Debug/net8.0/Client.pdb
 /Users/jasmine/ChatAppC#/Client/obj/Debug/net8.0/Client.genruntimeconfig.cache
 /Users/jasmine/ChatAppC#/Client/obj/Debug/net8.0/ref/Client.dll
+/Users/jasmine/ChatAppC#/Client/obj/Debug/net8.0/Client.sourcelink.json
