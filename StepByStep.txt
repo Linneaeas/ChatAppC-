@@ -11,9 +11,16 @@ a. Used Williams poll example.
 a. Based of Williams poll server.
 
 
-4. CREATE MAIN MENU
-a. In Client
+4. CLIENT: CREATED NEW FILE: LOGIC-Storing all methods we call on in Main.
+a. Create Main Menu 
+b. Create functionality to create an account on the CLient side.
 
+5. SERVER:
+a. Recieve the new user information.(Tog bort dubletter, servern blev forvirrad nar den fick en "Hej Server" ist for CREATE_ACCOUNT med 2 delar anv och losen)
+b. Server sends a confirmation response to the client that the user is created Display on Client Console. ()string response = "Kontot är nu registrerat!";
+c. Server Console prints out a message: Console.WriteLine($"Creating account for user: {username} with password: {password}");
+
+NEXT STEP: Connect the server with database and store usernames and passwords.
 
 
 

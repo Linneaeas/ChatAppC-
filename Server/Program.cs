@@ -1,7 +1,10 @@
 ﻿namespace Project;
 
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 class Program
 {
@@ -52,8 +55,41 @@ class Program
                     // Convert the received bytes to a string message
                     string message = System.Text.Encoding.UTF8.GetString(incoming, 0, read);
                     Console.WriteLine("From a client: " + message);
+
+                    // Process the received message based on the protocol
+                    ProcessMessage(client, message);
                 }
             }
+        }
+    }
+    static void ProcessMessage(Socket client, string message)
+    {
+        // Split the message into parts using the pipe character (|) as a separator
+        string[] parts = message.Split('|');
+
+        // Check the first part of the message to determine the action
+        switch (parts[0])
+        {
+            case "CREATE_ACCOUNT":
+                // Parts[1] contains the username, and Parts[2] contains the password
+                string username = parts[1];
+                string password = parts[2];
+
+                // Process the account creation request (you may want to add more validation)
+                Console.WriteLine($"Creating account for user: {username} with password: {password}");
+
+                // Send a response back to the client (you may want to define a response protocol)
+                string response = "Kontot är nu registrerat!";
+                byte[] responseData = Encoding.UTF8.GetBytes(response);
+                client.Send(responseData);
+
+                break;
+
+            // Add more cases for other message types as needed
+
+            default:
+                Console.WriteLine("Invalid message received.");
+                break;
         }
     }
 }
