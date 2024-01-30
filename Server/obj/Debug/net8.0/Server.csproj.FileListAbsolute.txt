@@ -1,0 +1,14 @@
+/Users/jasmine/ChatAppC#/Server/bin/Debug/net8.0/Server
+/Users/jasmine/ChatAppC#/Server/bin/Debug/net8.0/Server.deps.json
+/Users/jasmine/ChatAppC#/Server/bin/Debug/net8.0/Server.runtimeconfig.json
+/Users/jasmine/ChatAppC#/Server/bin/Debug/net8.0/Server.dll
+/Users/jasmine/ChatAppC#/Server/bin/Debug/net8.0/Server.pdb
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.AssemblyInfoInputs.cache
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.AssemblyInfo.cs
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.csproj.CoreCompileInputs.cache
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.dll
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/refint/Server.dll
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.pdb
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/Server.genruntimeconfig.cache
+/Users/jasmine/ChatAppC#/Server/obj/Debug/net8.0/ref/Server.dll

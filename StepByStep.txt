@@ -1,0 +1,16 @@
+1. CREATE PROJECT
+a. Create a folder to the project.
+b. Create folders inside the project: Client, Server, Shared.
+c. Create a project in each folder using: dotnet new console --use-program-main
+d. Shared: Change name from program.cs to Connection.cs, and create a new file called Message.cs.
+
+2. CREATE SERVER
+a. Used Williams poll example.
+
+3. CREATE CLIENT THAT CONNECTS TO THE SERVER
+a. Based of Williams poll server.
+
+
+
+
+
