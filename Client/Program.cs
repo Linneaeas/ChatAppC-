@@ -10,37 +10,37 @@ namespace Client
     {
         public static void Main(string[] args)
         {
-            /*3.A CONNECTING THE CLIENT TO THE SERVER----------------------------------------------------------------------------------------------------*/
+            /*3.A CONNECTING THE CLIENT TO THE SERVER*/
 
-            // Server's IP address (localhost in this case)
+            // Server's IP address (localhost in this case):
             IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-            // Endpoint for the server (IP address + port)
+            // Endpoint for the server (IP address + port):
             IPEndPoint serverEndPoint = new IPEndPoint(ipAddress, 25500);
 
-            // Create a socket for the client
+            // Create a socket for the client:
             Socket clientSocket = new Socket(
                 ipAddress.AddressFamily,
                 SocketType.Stream,
                 ProtocolType.Tcp
             );
 
-            // Connect to the server using the specified endpoint
+            // Connect to the server using the specified endpoint:
             clientSocket.Connect(serverEndPoint);
             Console.WriteLine("Connected to the server.");
 
-            // Display the main menu and pass the clientSocket to the LoginRegistration class
-            LoginRegistration.HuvudMeny(clientSocket);
+            // Display the main menu and pass the clientSocket to the LoginRegistration class:
+            LoginRegistration.MainMenu(clientSocket);
 
-            // Receive a response from the server
+            // Receive a response from the server:
             byte[] buffer = new byte[5000];
             int bytesRead = clientSocket.Receive(buffer);
-            // Convert the received bytes to a string response
+            // Convert the received bytes to a string response:
             string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-            // Display the response from the server
+            // Display the response from the server:
             Console.WriteLine("Server response: " + response);
 
-            // Wait for user input before closing the console
+            // Wait for user input before closing the console (?)????????????????????????????????????????????? WHY NEED THIS?//LS
             Console.ReadLine();
         }
     }

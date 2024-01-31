@@ -5,24 +5,25 @@ c. Create a project in each folder using: dotnet new console --use-program-main
 d. Client: Change name from program.cs to LoginRegistration.cs, and create a new file called Chattis.cs. (First we had one called "Logic", but to structure better we divided it into two)
 
 2. CREATE SERVER
-a. Used Williams poll example.
+a. Used Williams poll example to be able to connect multiple clients.
 
 3. CREATE CLIENT THAT CONNECTS TO THE SERVER
 a. Based of Williams poll server.
 
-
-4. CLIENT: CREATED NEW FILE: LOGIC-Storing all methods we call on in Main. (LATER SPLITTED INTO TWO)
-a. Create a class USER that contains UserName and Password
-b. Create Main Menu 
-c. Create functionality to create an account on the Client side.
+4. CLIENT-LoginRegistration.
+a. Create a class USER that contains UserName and Password.
+b. Create Main Menu.
+c. Create functionality to create an account.
 d. Function to send the New User information to the Server.
 
-5. SERVER:
-a. Recieve the new user information.(Tog bort dubletter, servern blev forvirrad nar den fick en "Hej Server" ist for CREATE_ACCOUNT med 2 delar anv och losen)
-b. Server sends a confirmation response to the client that the user is created Display on Client Console. ()string response = "Kontot är nu registrerat!";
-c. Server Console prints out a message: Console.WriteLine($"Creating account for user: {username} with password: {password}");
+5.ACCOUNT CREATION: RECIEVE & PROCESS INFORMATION FROM THE CLIENT 
+a. SERVER: Recieve the new user information.
+KOMM.(Tog bort dubletter, servern blev forvirrad nar den fick en "Hej Server" ist for CREATE_ACCOUNT med 2 delar anv och losen)
+b. SERVER sends a confirmation response to the client.
+5.b CLIENT: Recieved the response and print out that the user is created.
+c. SERVER: Console prints out a message: Console.WriteLine($"Creating account for user: {username} with password: {password}");
 
-6. MONGODB
+6. SERVER: MONGODB 
 a. Download in terminal: dotnet add package MongoDB.Driver
 b. Added Using keyword for MongoDB
 c. Created a container in Docker Desktop called ChatApp - assigned a port(Was'nt bound port automatically causing the code not contiued because no connection wiht DB. Wee needed to create a new one through images, choose play-optional setting-type in the port in the input field). 
@@ -31,16 +32,13 @@ e.  // Set up MongoDB connection
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
         IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
         usersCollection = database.GetCollection<BsonDocument>("users");
-
 f. Created a function InsertUser to save user and user info to the Database. 
 g. Called the function InsertUser in the CREATE_ACCOUNT switch.
--- If things doesst work on wednesday, check that the port is still there etc 
-
 
 7. CREATE LOGIN FUNCTION
-a. Added function on the Client side created a new Case for Login
-b. Function to send Login information to the server
-c. Added LOGIN case on the Server to handle the data coming in through "LOGIN".
+a. CHANGED, it now has it's own Switch.-CLIENT LogIn function & a new Case for Login
+b. CLIENT: Function SendLoginInformation to send Login information to the server.
+c. SERVER: Added LOGIN case to handle the data coming in through "LOGIN".
 d. Created a function for Authenticate User, that checks if there is a user with given username & password. 
 e. We call on that function in an IF statement in the case"LOGIN".
 f. If succecfull, send a confirmation response "Login successfull to the client. If not send a message to the user saying Login failed. 
@@ -48,24 +46,21 @@ f. If succecfull, send a confirmation response "Login successfull to the client.
 8. CREATED FUNCTIONALITY TO HANDLE IF LOGIN FAILED OR SUCCEEDED
 a. Created a function to handle the response from the server, if failed, the Main menu displays again. 
 
-9. SPLIT LOGIC FILE
+9. CLIENT: SPLIT LOGIC FILE
 a. One for Login&Registration and another for once you are logged in in the Chatroom.
 
-10. UPDATE CREATE ACCOUNT FUNCTION 
+10. CLIENT: UPDATE CREATE ACCOUNT FUNCTION 
 a. Created a function for handleCreateAccountResponse, with a Switch depending on what answer the CLient recieves from the Server: ACCOUNT_CREATED or ACCOUNT_CREATION_FAILED"
 b. We call on handleCreateAccountResponse in "SendAccountInformation"
 
 11.SERVER:  CREATED FUNCTIONALITY TO CHECK IF USERNAME EXISTS
-a. If username exists, Account fails and user is directed to main menu. If it dont exists, the account is created  and user is directed to main menu.
-b. Calling on that function in CREATE_ACCOUNT Case.
-
-
+a. SERVER: If username exists, Account fails and CLIENT:user is directed to main menu. If it dont exists, the account is created  and user is directed to main menu.
+b. SERVER Calling on that function in CREATE_ACCOUNT Case.
 
 
 
 If successfull call on function that handles the message rooms. 
-/- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!)
- 
+/- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!) 
 
 NEXT STEP:
 Show "this person joined" to everyone
@@ -90,6 +85,3 @@ Se historik på meddelande (upp till 30 meddelanden)
 
 IF WE GOT TIME:
 - The character "|" can't be allowed in the user inputs since the system will split everything
-
-
--Ska vi halla oss till ett sprak pa funktioner? allt annnat ar pa engelska, Bara responsen som syns till anvandaren kan va pa svenska?
