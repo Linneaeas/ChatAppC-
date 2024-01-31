@@ -27,7 +27,7 @@ namespace Client
             Console.WriteLine("Connected to the server.");
 
             // Display the main menu and pass the clientSocket to the Logic class
-            Logic.HuvudMeny(clientSocket);
+            LoginRegistration.HuvudMeny(clientSocket);
 
 
             // Receive a response from the server
@@ -38,8 +38,6 @@ namespace Client
 
             // Display the response from the server
             Console.WriteLine("Server response: " + response);
-
-
 
             // Wait for user input before closing the console
             Console.ReadLine();

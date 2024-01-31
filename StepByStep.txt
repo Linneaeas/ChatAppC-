@@ -39,15 +39,22 @@ g. Called the function InsertUser in the CREATE_ACCOUNT switch.
 a. Added function on the Client side, created a new Case for Login
 b. Added LOGIN case on the Server to handle the data coming in through "LOGIN".
 c. Created a function for Authenticate User, that checks if there is a user with given username & password. 
-d. We call on that funcktion in an IF statement in the case"LOGIN".
+d. We call on that function in an IF statement in the case"LOGIN".
 e. If succecfull, send a confirmation response "Login successfull to the client. If not send a message to the user saying Login failed. 
 
 8. CREATED FUNCTIONALITY TO HANDLE IF LOGIN FAILED OR SUCCEEDED
 a. Created a function to handle the response from the server, if failed, the Main menu displays again. 
 
+9. SPLIT LOGIC FILE
+a. One for Login&Registration and another for once you are logged in in the Chatroom.
+
 If successfull call on function that handles the message rooms. 
 /- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!)
 
+NEXT STEP:
+Show "this person joined" to everyone
+List everyone that is already logged in to currentuser
+Show chat, 30 messages
 
 
 OK Registrera användare (med namn och lösenord minst)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Client
 {
-    public class Logic
+    public class LoginRegistration
     {
 
         public class User
@@ -84,11 +84,11 @@ namespace Client
             switch (response)
             {
                 case "LOGIN_SUCCESSFUL":
-                    Console.WriteLine("Login successful!");
+                    Console.WriteLine("Välkommen till Chattis!");
                     // Add code to proceed after successful login if needed
                     break;
                 case "LOGIN_FAILED":
-                    Console.WriteLine("Login failed. Try again.");
+                    Console.WriteLine("Login missslyckades, försök igen.");
                     // Prompt the user to log in again
                     HuvudMeny(clientSocket);
                     break;
@@ -129,6 +129,5 @@ namespace Client
             // Wait for and process the server's response
             // (Handle server response in a separate method or thread)
         }
-
     }
 }
