@@ -56,11 +56,11 @@ namespace Client
             newUser.Password = Console.ReadLine();
 
             // Send the user information to the server
-            SendUserInformation(newUser, clientSocket);
+            SendAccountInformation(newUser, clientSocket);
         }
 
         /*4.D SEND THE NEW ACCOUNT INFORMATION TO THE SERVER-------------------------------------------------------------------------*/
-        public static void SendUserInformation(User user, Socket clientSocket)
+        public static void SendAccountInformation(User user, Socket clientSocket)
         {
             // Formulate a message or data structure to send to the server
             // indicating that an account creation request is being made.
@@ -76,7 +76,7 @@ namespace Client
 
         }
 
-        /*8.A + 10 RECIEVE RESPONSE FROM SERVER & HANDLE THE RESPONSE ---------------------------------*/
+        /*10 CREATE ACCOUNT: RECIEVE RESPONSE FROM SERVER & HANDLE THE RESPONSE ---------------------------------*/
         public static void HandleCreateAccountResponse(Socket clientSocket)
         {
             // Read the server's response
