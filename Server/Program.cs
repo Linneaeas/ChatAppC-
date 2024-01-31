@@ -10,11 +10,13 @@ using MongoDB.Driver;
 
 class Program // Server 
 {
-    static IMongoCollection<BsonDocument>? usersCollection; //Initiated a collection called users & Bson Docker
+    /*6.D INITIALIZE MONGO DB COLLECTION USERS----------------------------------------------------------------------------------------*/
+    static IMongoCollection<BsonDocument>? usersCollection;
 
+    /*2.A CREATE SERVER---------------------------------------------------------------------------------------------------*/
     static void Main(string[] args)
     {
-        // Set up MongoDB connection
+        /*6.E SET UP MONGODB CONNECTION----------------------------------------------------------------------------------------*/
         //The code establishes a connection to a MongoDB server running on localhost at port 27017.It selects the database named "ChatApp" and gets a collection named "users" as an IMongoCollection<BsonDocument>.
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
         IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
@@ -72,6 +74,8 @@ class Program // Server
             }
         }
     }
+
+    /*5. RECIEVE MESSAGE DATA---------------------------------------------------------------------------------------------------*/
     static void ProcessMessage(Socket client, string message)
     {
         // Split the message into parts using the pipe character (|) as a separator
@@ -85,25 +89,38 @@ class Program // Server
         // Check the first part of the message to determine the action
         switch (parts[0])
         {
+
+            /*10.A CASE FOR LOGIN RESPONSES----------------------------------------------------------*/
             case "CREATE_ACCOUNT":
                 // Parts[1] contains the username, and Parts[2] contains the password
                 username = parts[1];
                 password = parts[2];
 
-                // Insert user into MongoDB
-                InsertUser(username, password);
 
-                // Process the account creation request (you may want to add more validation)
-                Console.WriteLine($"Creating account for user: {username} with password: {password}");//Confirmation registration has gone through.
+                // Check if the username already exists in the MongoDB collection
+                if (IsUsernameExists(username))
+                {
+                    // Send a response back to the client indicating that the account creation failed
+                    response = "ACCOUNT_CREATION_FAILED";
+                    responseData = Encoding.UTF8.GetBytes(response);
+                    client.Send(responseData);
+                }
+                else
+                {
+                    // Insert user into MongoDB
+                    InsertUser(username, password);
 
-                // Send a response back to the client (you may want to define a response protocol)
-                response = "Kontot är nu registrerat!";
-                responseData = Encoding.UTF8.GetBytes(response);
-                client.Send(responseData);
+                    // Process the account creation request (you may want to add more validation)
+                    Console.WriteLine($"Creating account for user: {username} with password: {password}");//Confirmation registration has gone through.
 
-
+                    // Send a response back to the client indicating successful account creation
+                    response = "ACCOUNT_CREATED";
+                    responseData = Encoding.UTF8.GetBytes(response);
+                    client.Send(responseData);
+                }
                 break;
 
+            /*7.E CASE FOR LOGIN RESPONSES----------------------------------------------------------*/
             case "LOGIN":
                 // Parts[1] contains the username, and Parts[2] contains the password
                 username = parts[1];
@@ -115,7 +132,7 @@ class Program // Server
                     Console.WriteLine($"Login successful for user: {username}");//Displays on server.
 
                     // Send a response back to the client indicating successful login:
-                    response = "LOGIN_SUCCESSFUL";//Displays on Client.
+                    response = "LOGIN_SUCCESSFUL";
                     responseData = Encoding.UTF8.GetBytes(response);
                     client.Send(responseData);
                 }
@@ -124,7 +141,7 @@ class Program // Server
                     Console.WriteLine($"Login failed for user: {username}");//Displays on Server.
 
                     // Send a response back to the client indicating failed login
-                    response = "LOGIN_FAILED";//Displays on Client.
+                    response = "LOGIN_FAILED";
                     responseData = Encoding.UTF8.GetBytes(response);
                     client.Send(responseData);
                 }
@@ -137,6 +154,8 @@ class Program // Server
                 break;
         }
     }
+
+    /*7.D CHECKS THAT USER & PASSWORD ARE CORRECT/EXISTS ----------------------------------------------------------*/
     static bool AuthenticateUser(string username, string password)
     {
         // Query MongoDB to check if the provided username and password match any stored user
@@ -151,7 +170,7 @@ class Program // Server
         return user != null;
     }
 
-
+    /*6.F ADDS USER TO MONGODB----------------------------------------------------------*/
     static void InsertUser(string username, string password)
     {
         var document = new BsonDocument
@@ -163,6 +182,17 @@ class Program // Server
         usersCollection?.InsertOne(document);
 
         Console.WriteLine($"User {username} inserted into MongoDB.");
+    }
+
+    /*11 CHECK IF USERNAME EXISTS---------------------------------------------------------------------*/
+    static bool IsUsernameExists(string username)
+    {
+        // Query MongoDB to check if the provided username already exists
+        var filter = Builders<BsonDocument>.Filter.Eq("username", username);
+        var existingUser = usersCollection?.Find(filter).FirstOrDefault();
+
+        // If an existing user is found, the username already exists
+        return existingUser != null;
     }
 }
 

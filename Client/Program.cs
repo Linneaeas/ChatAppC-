@@ -10,6 +10,8 @@ namespace Client
     {
         public static void Main(string[] args)
         {
+            /*3.A CONNECTING THE CLIENT TO THE SERVER----------------------------------------------------------------------------------------------------*/
+
             // Server's IP address (localhost in this case)
             IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
             // Endpoint for the server (IP address + port)
@@ -26,9 +28,8 @@ namespace Client
             clientSocket.Connect(serverEndPoint);
             Console.WriteLine("Connected to the server.");
 
-            // Display the main menu and pass the clientSocket to the Logic class
+            // Display the main menu and pass the clientSocket to the LoginRegistration class
             LoginRegistration.HuvudMeny(clientSocket);
-
 
             // Receive a response from the server
             byte[] buffer = new byte[5000];
