@@ -86,6 +86,7 @@ namespace Client
                 case "LOGIN_SUCCESSFUL":
                     Console.WriteLine("Välkommen till Chattis!");
                     // Add code to proceed after successful login if needed
+
                     break;
                 case "LOGIN_FAILED":
                     Console.WriteLine("Login missslyckades, försök igen.");
