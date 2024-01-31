@@ -784,11 +784,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jasmine/ChatAppC#/Server/Server.csproj",
+      "projectUniqueName": "/Users/jasmine/ChatAppCSharp.NET/Server/Server.csproj",
       "projectName": "Server",
-      "projectPath": "/Users/jasmine/ChatAppC#/Server/Server.csproj",
+      "projectPath": "/Users/jasmine/ChatAppCSharp.NET/Server/Server.csproj",
       "packagesPath": "/Users/jasmine/.nuget/packages/",
-      "outputPath": "/Users/jasmine/ChatAppC#/Server/obj/",
+      "outputPath": "/Users/jasmine/ChatAppCSharp.NET/Server/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/jasmine/.nuget/NuGet/NuGet.Config"

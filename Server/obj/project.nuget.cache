@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FEjANiMn1z+XqSIpl4PkoYMlR9SMn1FPJ85zM4rh0me6I/UZEbnhII2B/B1G0L+oP9PFbJMVBSt75HX7W+UFJA==",
+  "dgSpecHash": "CGr8qk1Rnt/byhC06NavaNebuGx5DsC7EUh2GoIzJZWArJMRDcCRh+gyecBOAu0Ec4X5VopdRhYyIzYvFSMtlg==",
   "success": true,
-  "projectFilePath": "/Users/jasmine/ChatAppC#/Server/Server.csproj",
+  "projectFilePath": "/Users/jasmine/ChatAppCSharp.NET/Server/Server.csproj",
   "expectedPackageFiles": [
     "/Users/jasmine/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
     "/Users/jasmine/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",

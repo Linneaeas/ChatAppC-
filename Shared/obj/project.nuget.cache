@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RXWJI6vVsHadVqLuBuI2Tm0EfloR8tQMpWIUA8SwLlfXjcTh+FxJpIbR54TktCPIrdOiOzxQm2nJSusV9SVNtg==",
+  "dgSpecHash": "m5jzTWmB038xfmyZTFlmA9fF1ITKdae2dt9MMhydx9/KLAIjPqaLzMndPKoeRJGhKViHC5HFf30nl/tmKVsaBA==",
   "success": true,
-  "projectFilePath": "/Users/jasmine/ChatAppC#/Shared/Shared.csproj",
+  "projectFilePath": "/Users/jasmine/ChatAppCSharp.NET/Shared/Shared.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

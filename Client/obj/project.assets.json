@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jasmine/ChatAppC#/Client/Client.csproj",
+      "projectUniqueName": "/Users/jasmine/ChatAppCSharp.NET/Client/Client.csproj",
       "projectName": "Client",
-      "projectPath": "/Users/jasmine/ChatAppC#/Client/Client.csproj",
+      "projectPath": "/Users/jasmine/ChatAppCSharp.NET/Client/Client.csproj",
       "packagesPath": "/Users/jasmine/.nuget/packages/",
-      "outputPath": "/Users/jasmine/ChatAppC#/Client/obj/",
+      "outputPath": "/Users/jasmine/ChatAppCSharp.NET/Client/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/jasmine/.nuget/NuGet/NuGet.Config"

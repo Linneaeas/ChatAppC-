@@ -8,13 +8,14 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-class Program
+class Program // Server 
 {
-    static IMongoCollection<BsonDocument> usersCollection;
+    static IMongoCollection<BsonDocument>? usersCollection; //Initiated a collection called users & Bson Docker
 
     static void Main(string[] args)
     {
         // Set up MongoDB connection
+        //The code establishes a connection to a MongoDB server running on localhost at port 27017.It selects the database named "ChatApp" and gets a collection named "users" as an IMongoCollection<BsonDocument>.
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
         IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
         usersCollection = database.GetCollection<BsonDocument>("users");
@@ -28,13 +29,13 @@ class Program
 
         // Create a socket for the server
         Socket serverSocket = new Socket(
-            ipAddress.AddressFamily,
-            SocketType.Stream,
-            ProtocolType.Tcp
+            ipAddress.AddressFamily, // how ir handles the addressfamily 
+            SocketType.Stream, // Specify sockettype, we choose stream to make it be able to keep sedning messages 
+            ProtocolType.Tcp // Which protoype we want to use, which is TCP
         );
         // Bind the server socket to the specified endpoint
         serverSocket.Bind(iPEndPoint);
-        // Start listening for incoming connections with a backlog of 5
+        // Start listening for incoming connections with a backlog of 5 /Error prev. in case of multiple requests. May not be needed for this small project.
         serverSocket.Listen(5);
 
         // Infinite loop to keep the server running
@@ -63,7 +64,7 @@ class Program
                     int read = client.Receive(incoming);
                     // Convert the received bytes to a string message
                     string message = System.Text.Encoding.UTF8.GetString(incoming, 0, read);
-                    Console.WriteLine("From a client: " + message);
+                    Console.WriteLine("From a client: " + message);//Confirmation that the server recieved a message from client
 
                     // Process the received message based on the protocol
                     ProcessMessage(client, message);
@@ -74,28 +75,59 @@ class Program
     static void ProcessMessage(Socket client, string message)
     {
         // Split the message into parts using the pipe character (|) as a separator
-        string[] parts = message.Split('|');
+        string[] parts = message.Split('|'); //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
+
+        // Declare variables outside the switch block
+        string username, password, response;
+        byte[] responseData;
+
 
         // Check the first part of the message to determine the action
         switch (parts[0])
         {
             case "CREATE_ACCOUNT":
                 // Parts[1] contains the username, and Parts[2] contains the password
-                string username = parts[1];
-                string password = parts[2];
+                username = parts[1];
+                password = parts[2];
 
                 // Insert user into MongoDB
                 InsertUser(username, password);
 
                 // Process the account creation request (you may want to add more validation)
-                Console.WriteLine($"Creating account for user: {username} with password: {password}");
+                Console.WriteLine($"Creating account for user: {username} with password: {password}");//Confirmation registration has gone through.
 
                 // Send a response back to the client (you may want to define a response protocol)
-                string response = "Kontot är nu registrerat!";
-                byte[] responseData = Encoding.UTF8.GetBytes(response);
+                response = "Kontot är nu registrerat!";
+                responseData = Encoding.UTF8.GetBytes(response);
                 client.Send(responseData);
 
 
+                break;
+
+            case "LOGIN":
+                // Parts[1] contains the username, and Parts[2] contains the password
+                username = parts[1];
+                password = parts[2];
+
+                // Check if the provided credentials are valid
+                if (AuthenticateUser(username, password))
+                {
+                    Console.WriteLine($"Login successful for user: {username}");//Displays on server.
+
+                    // Send a response back to the client indicating successful login:
+                    response = "LOGIN_SUCCESSFUL";//Displays on Client.
+                    responseData = Encoding.UTF8.GetBytes(response);
+                    client.Send(responseData);
+                }
+                else
+                {
+                    Console.WriteLine($"Login failed for user: {username}");//Displays on Server.
+
+                    // Send a response back to the client indicating failed login
+                    response = "LOGIN_FAILED";//Displays on Client.
+                    responseData = Encoding.UTF8.GetBytes(response);
+                    client.Send(responseData);
+                }
                 break;
 
             // Add more cases for other message types as needed
@@ -105,6 +137,21 @@ class Program
                 break;
         }
     }
+    static bool AuthenticateUser(string username, string password)
+    {
+        // Query MongoDB to check if the provided username and password match any stored user
+        var filter = Builders<BsonDocument>.Filter.And(
+            Builders<BsonDocument>.Filter.Eq("username", username),
+            Builders<BsonDocument>.Filter.Eq("password", password)
+        );
+
+        var user = usersCollection.Find(filter).FirstOrDefault();
+
+        // If a user is found, authentication is successful
+        return user != null;
+    }
+
+
     static void InsertUser(string username, string password)
     {
         var document = new BsonDocument
@@ -113,7 +160,7 @@ class Program
                 { "password", password }
             };
 
-        usersCollection.InsertOne(document);
+        usersCollection?.InsertOne(document);
 
         Console.WriteLine($"User {username} inserted into MongoDB.");
     }

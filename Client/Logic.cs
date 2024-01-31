@@ -27,13 +27,73 @@ namespace Client
             switch (userInput)
             {
                 case "1":
-                    Console.WriteLine("Selected Option 1");
+                    LoggaIn(clientSocket);
                     break;
                 case "2":
                     SkapaKonto(clientSocket);
                     break;
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
+                    break;
+            }
+        }
+
+        public static void LoggaIn(Socket clientSocket)
+        {
+            Console.WriteLine("Logga in:");
+
+            // Create a new User instance
+            User existingUser = new User();
+
+            // Get username from the user
+            Console.Write("Ange användarnamn: ");
+            existingUser.UserName = Console.ReadLine();
+
+            // Get password from the user (you might want to handle password input securely)
+            Console.Write("Ange lösenord: ");
+            existingUser.Password = Console.ReadLine();
+
+            // Send the user information to the server for login
+            SendLoginInformation(existingUser, clientSocket);
+        }
+
+        public static void SendLoginInformation(User user, Socket clientSocket)
+        {
+            // Formulate a message or data structure to send to the server
+            // indicating that a login request is being made.
+            string loginRequest = $"LOGIN|{user.UserName}|{user.Password}";
+            byte[] data = Encoding.UTF8.GetBytes(loginRequest);
+
+            // Send the login request to the server
+            clientSocket.Send(data);
+
+
+            // Wait for and process the server's response
+            // (Handle server response in a separate method or thread)
+            HandleLoginResponse(clientSocket);
+
+        }
+        public static void HandleLoginResponse(Socket clientSocket)
+        {
+            // Read the server's response
+            byte[] responseBytes = new byte[5000];
+            int responseLength = clientSocket.Receive(responseBytes);
+            string response = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+
+            // Process the server's response
+            switch (response)
+            {
+                case "LOGIN_SUCCESSFUL":
+                    Console.WriteLine("Login successful!");
+                    // Add code to proceed after successful login if needed
+                    break;
+                case "LOGIN_FAILED":
+                    Console.WriteLine("Login failed. Try again.");
+                    // Prompt the user to log in again
+                    HuvudMeny(clientSocket);
+                    break;
+                default:
+                    Console.WriteLine("Unexpected response from the server.");
                     break;
             }
         }
@@ -55,8 +115,6 @@ namespace Client
 
             // Send the user information to the server
             SendUserInformation(newUser, clientSocket);
-
-
         }
         public static void SendUserInformation(User user, Socket clientSocket)
         {
@@ -71,5 +129,6 @@ namespace Client
             // Wait for and process the server's response
             // (Handle server response in a separate method or thread)
         }
+
     }
 }

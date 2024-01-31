@@ -23,7 +23,7 @@ c. Server Console prints out a message: Console.WriteLine($"Creating account for
 6. MONGODB
 a. Download in terminal: dotnet add package MongoDB.Driver
 b. Added Using keyword for MongoDB
-c. Created a container in Docker Desktop called ChatApp - assigned a port(Was'nt bound port automatically causing the code not contiued because no connection wihrt DB ). 
+c. Created a container in Docker Desktop called ChatApp - assigned a port(Was'nt bound port automatically causing the code not contiued because no connection wiht DB. Wee needed to create a new one through images, choose play-optional setting-type in the port in the input field). 
 d. Initiated a collection called users & Bson Docker: static IMongoCollection<BsonDocument> usersCollection;
 e.  // Set up MongoDB connection
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
@@ -34,5 +34,36 @@ f. Created a function InsertUser to save user and user info to the Database.
 g. Called the function InsertUser in the CREATE_ACCOUNT switch.
 -- If things doenst work on wednesday, check that the port is still there etc 
 
-NEXT TIME: LOGIN FUNCTION
 
+7. CREATE LOGIN FUNCTION
+a. Added function on the Client side, created a new Case for Login
+b. Added LOGIN case on the Server to handle the data coming in through "LOGIN".
+c. Created a function for Authenticate User, that checks if there is a user with given username & password. 
+d. We call on that funcktion in an IF statement in the case"LOGIN".
+e. If succecfull, send a confirmation response "Login successfull to the client. If not send a message to the user saying Login failed. 
+
+8. CREATED FUNCTIONALITY TO HANDLE IF LOGIN FAILED OR SUCCEEDED
+a. Created a function to handle the response from the server, if failed, the Main menu displays again. 
+
+If successfull call on function that handles the message rooms. 
+/- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!)
+
+
+
+OK Registrera användare (med namn och lösenord minst)
+
+Logga in på chat-appen (med namn och lösenord)
+	- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!)
+
+Skicka meddelande till andra användare som också är inloggade
+	- Alla ser allas meddelanden
+
+Skicka privat meddelande till en annan användare
+	- Ingen annan kan se meddelandet
+
+Se historik på meddelande (upp till 30 meddelanden)
+	- Historiken visas så fort man loggar in
+	- Globala och privata meddelanden skall visas
+
+IF WE GOT TIME:
+- The character "|" can't be allowed in the user inputs since the system will split everything
