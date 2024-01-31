@@ -12,6 +12,12 @@ class Program // Server
 {
     /*6.D INITIALIZE MONGO DB COLLECTION USERS----------------------------------------------------------------------------------------*/
     static IMongoCollection<BsonDocument>? usersCollection;
+    // List to store all connected client sockets
+    static List<Socket> connectedClients = new List<Socket>();
+    // List to store logged-in client usernames
+    static List<string> loggedInClients = new List<string>();
+
+    // Method to send a list of connected clients to a specific client
 
     /*2.A CREATE SERVER---------------------------------------------------------------------------------------------------*/
     static void Main(string[] args)
@@ -70,6 +76,7 @@ class Program // Server
 
                     // Process the received message based on the protocol
                     ProcessMessage(client, message);
+                    SendConnectedClientsList(client); // Send the connected clients list to each client//Works for the first client that logs in
                 }
             }
         }
@@ -82,7 +89,7 @@ class Program // Server
         string[] parts = message.Split('|'); //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block
-        string username, password, response;
+        string username, password, response;//kanske CreateAccountResponse eller Objekt: respons som ar av typ createAccount/Login etc.
         byte[] responseData;
 
 
@@ -131,6 +138,9 @@ class Program // Server
                 {
                     Console.WriteLine($"Login successful for user: {username}");//Displays on server.
 
+                    connectedClients.Add(client);
+                    loggedInClients.Add(username);
+
                     // Send a response back to the client indicating successful login:
                     response = "LOGIN_SUCCESSFUL";
                     responseData = Encoding.UTF8.GetBytes(response);
@@ -148,6 +158,13 @@ class Program // Server
                 break;
 
             // Add more cases for other message types as needed
+            case "LOGOUT":
+                username = parts[1];
+                // Remove the client from the lists
+                connectedClients.Remove(client);
+                loggedInClients.Remove(username);
+                Console.WriteLine($"User {username} logged out.");
+                break;
 
             default:
                 Console.WriteLine("Invalid message received.");
@@ -193,6 +210,12 @@ class Program // Server
 
         // If an existing user is found, the username already exists
         return existingUser != null;
+    }
+    static void SendConnectedClientsList(Socket client)
+    {
+        string connectedClientsList = string.Join(",", loggedInClients);
+        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
+        client.Send(data);
     }
 }
 

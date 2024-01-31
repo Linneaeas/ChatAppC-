@@ -20,8 +20,7 @@ namespace Client
             Console.WriteLine("Huvud Menu:");
             Console.WriteLine("1. Skapa konto");
             Console.WriteLine("2. Logga in");
-
-            Console.Write("Vad vill du göra?: ");
+            Console.WriteLine("Vad vill du göra?: ");
             string? userInput = Console.ReadLine();
             // Process the user input and perform actions based on the selected option
             switch (userInput)
@@ -98,9 +97,11 @@ namespace Client
                     HuvudMeny(clientSocket);
                     break;
                 default:
-                    Console.WriteLine("Unexpected response from the server.");
+                    Console.WriteLine("Unexpected response from the server in HandleCreateAccountResponse.");
                     break;
             }
+            // Call the method to receive continuous responses from the server
+            ReceiveServerResponses(clientSocket);
         }
 
 
@@ -152,9 +153,8 @@ namespace Client
             {
                 case "LOGIN_SUCCESSFUL":
                     Console.WriteLine("Välkommen till Chattis!");
-                    // Add code to proceed after successful login if needed
-
                     break;
+
                 case "LOGIN_FAILED":
                     Console.WriteLine("Login missslyckades, försök igen.");
                     // Prompt the user to log in again
@@ -162,9 +162,44 @@ namespace Client
                     break;
 
                 default:
-                    Console.WriteLine("Unexpected response from the server.");
+                    Console.WriteLine("Unexpected response from the server in HandleLoginResponse.");
                     break;
             }
+            // Call the method to receive continuous responses from the server
+            ReceiveServerResponses(clientSocket);
         }
+
+        // "Client might be expecting responses for both actions sequentially.
+        //  If the server sends the list of connected clients after the first login, but the client is still expecting a response for account creation,
+        //  it might interpret the connected clients list as an unexpected response.
+        //  Here's a possible modification to address this issue:"
+
+        //  Lösning vi är tveksamma till, tror det finns en bättre lösning.
+        // T.ex kanske klienten blir förvirrad av "response", kanske behövs tydliggöras vilket respons som ar vad?
+
+        public static void ReceiveServerResponses(Socket clientSocket)
+        {
+            while (true)
+            {
+                byte[] responseBytes = new byte[5000];
+                int responseLength = clientSocket.Receive(responseBytes);
+                string response = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+
+                // Process the server's response
+                switch (response)
+                {
+                    // Handle responses based on your application's requirements
+                    case "CONNECTED_CLIENTS":
+                        // Parse and display the list of connected clients
+                        Console.WriteLine("Connected Clients: " + response.Substring("CONNECTED_CLIENTS|".Length));
+                        break;
+                    // Add more cases for other response types as needed
+                    default:
+                        Console.WriteLine("Unexpected response from the server in RecieveServerResponses: " + response);
+                        break;
+                }
+            }
+        }
+
     }
 }
