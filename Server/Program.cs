@@ -20,8 +20,6 @@ class Program
     //12.B
     static List<string> loggedInClients = new List<string>();
 
-    // Method to send a list of connected clients to a specific client: 
-
     // 2.A CREATE SERVER
     static void Main(string[] args)
     {
@@ -94,7 +92,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse;//kanske CreateAccountResponse eller Objekt: respons som ar av typ createAccount/Login etc.
+        string username, password, createAccountResponse, loginResponse;
         byte[] responseData;
 
 
@@ -144,12 +142,15 @@ class Program
                     connectedClients.Add(client);//12.A
                     loggedInClients.Add(username);//12.B
 
+
                     //Displays in the server terminal:
                     Console.WriteLine($"Login successful for user: {username}");
-                    // Send a response back to the client indicating successful login:
+
                     loginResponse = "LOGIN_SUCCESSFUL";
+
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
+
                 }
                 else
                 {
@@ -168,7 +169,7 @@ class Program
                 // Remove the client from the lists:
                 connectedClients.Remove(client);//12.C
                 loggedInClients.Remove(username);// 12.b
-                Console.WriteLine($"User {username} logged out.");
+
                 break;
 
             default:
@@ -221,9 +222,9 @@ class Program
     static void SendConnectedClientsList(Socket client)
     {
         string connectedClientsList = string.Join(",", loggedInClients);
-        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");//14.B
+        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
         client.Send(data);
     }
 
-}
 
+}

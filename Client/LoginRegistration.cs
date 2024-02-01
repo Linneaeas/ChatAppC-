@@ -151,9 +151,9 @@ namespace Client
         public static void HandleLoginResponse(Socket clientSocket)
         {
             // Read the server's response
-            byte[] responseBytes = new byte[5000];
-            int responseLength = clientSocket.Receive(responseBytes);
-            string loginResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);//13
+            byte[] data = new byte[5000];
+            int responseLength = clientSocket.Receive(data);
+            string loginResponse = Encoding.UTF8.GetString(data, 0, responseLength);//13
 
             // Process the server's response & outcome depending on which response:
             switch (loginResponse)
@@ -161,7 +161,6 @@ namespace Client
                 case "LOGIN_SUCCESSFUL":
                     Console.WriteLine("Välkommen till Chattis!");
                     HandleConnectedClientsResponse(clientSocket);
-
                     break;
 
                 case "LOGIN_FAILED":
@@ -174,15 +173,17 @@ namespace Client
                     break;
             }
         }
+
+
         //
         /*14.A SPECIFIC RESPONSE FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC RESPONSE FOR CONNECTED CLIENTS 14.A */
         //
         public static void HandleConnectedClientsResponse(Socket clientSocket)
         {
             // Read the server's response
-            byte[] responseBytes = new byte[5000];
-            int responseLength = clientSocket.Receive(responseBytes);
-            string connectedClientsResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            byte[] data = new byte[5000];
+            int responseLength = clientSocket.Receive(data);
+            string connectedClientsResponse = Encoding.UTF8.GetString(data, 0, responseLength);
 
             // Process the server's response & outcome depending on which response:
             if (connectedClientsResponse.StartsWith("CONNECTED_CLIENTS|"))
@@ -198,5 +199,6 @@ namespace Client
                 Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse.");
             }
         }
+
     }
 }
