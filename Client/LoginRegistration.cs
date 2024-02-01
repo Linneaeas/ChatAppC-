@@ -87,7 +87,8 @@ namespace Client
             // Read & decode the server's response:
             byte[] responseBytes = new byte[5000];
             int responseLength = clientSocket.Receive(responseBytes);
-            string createAccountResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            string createAccountResponse = Encoding.UTF8.//13
+            GetString(responseBytes, 0, responseLength);
 
             // Process the server's response & outcome depending on which response:
             switch (createAccountResponse)
@@ -152,7 +153,7 @@ namespace Client
             // Read the server's response
             byte[] responseBytes = new byte[5000];
             int responseLength = clientSocket.Receive(responseBytes);
-            string loginResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            string loginResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);//13
 
             // Process the server's response & outcome depending on which response:
             switch (loginResponse)
@@ -173,7 +174,9 @@ namespace Client
                     break;
             }
         }
-
+        //
+        /*14.A SPECIFIC RESPONSE FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC RESPONSE FOR CONNECTED CLIENTS 14.A */
+        //
         public static void HandleConnectedClientsResponse(Socket clientSocket)
         {
             // Read the server's response

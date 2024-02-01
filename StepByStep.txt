@@ -62,18 +62,47 @@ a. For connectedClients - when a client connected-adds to list.
 b. For loggedInClients- when a user logs in-adds to list.
 c. In LOGOUT-Removes the client from the loggedInClients and the connectedClients.
 d. Send the ConnectedClientsList to the Client.
-e. CLient recieves the list
+e. Client recieves the list in the general "response" var in Main(client).
 
-12. RESPONSE HANDLE ERROR- when a client is logged in, the connected/logged in users displays for the first person that logs in.
+13. RESPONSE HANDLE ERROR- when a client is logged in, the connected/logged in users displays for the first person that logs in.
 when the second user logs in, it comes invalid server response. We solved this by creating separate response variables instead of "response", we have now "loginRespone", "createAccountResponse", and we are planning on doing the same for logout, public messages, and private messages. 
 
-If successfull call on function that handles the message rooms. 
-/- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!) 
+14. CREATES SPECIFIC RESPONSE VARIABLE FOR CONNECTED CLIENTS.
+a. Created a "HandleConnectedClientsResponse".
+b. Adjusted the server SendConnectedClientsList to include a Prefix to tell the client that this is a ConnectedClients Response.
+
 
 NEXT STEP:
-Show "this person joined" to everyone
-List everyone that is already logged in to currentuser
-Show chat, 30 messages
+1. Show "this person joined" to everyone when a user logs in. 
+2. Create a main menu for Chattis that displays when to the user upon login + when a user writes a specific message input.(ex. a prefix that lets the program know that this is a command.)
+Sugggestion: 
+CHATTIS MENY
+*To show this meny, type: ^ShowMenu 
+*To show logged in users, type: ^ShowLoggedIn
+*To open or join a private chatroom, type: ^Private followed by the username, ex: ^PrivateElin
+*To go back to the public chatroom, type: ^Public
+
+
+3. Suggestion: Display ex: "Elin send you a private message, type ^PrivateElin to display message. 
+
+4. Suggestion: Display when entered a private chatroom: "This is a private chat between (you) and (the other person)" ex: 
+"This is a private chatroom between Elin and Angelica. To go back to the public chatroom, type: ^Public ".
+
+5. Functionality Storage: 
+Create a variable called "privateMessages" with a parameter of between which 2 users it refers to(?) Send the messages to the server that handles the storage in mongodb. 
+Same thing with "publicMessages". 
+
+Private messages:
+When a person writes a private message to someone, it creates a room/array ex"Private<User2></User2>" sends it to the server that recieves it and stores it in a container in mongoDB called ex "PrivateElinAngelica". there it stores the 30 most recent chatmessages. Everytime that room is entered, the last 30 messeges are recived from the server(the server needs to send them) displayed. 
+
+Public messages: 
+Store the 30 most recent messages in a room/array+container called ex "PublicMessages". 
+Everytime that room is entered, the last 30 messeges are displayed. 
+
+Everytime someone enters the chatroom, server needs to send the last 30 messeges of that room->the client needs to recive them and display them. 
+
+Each time a message is sent, it updates the server with the new message. The message that is 31 messages back will get deleted for each new message in that room. 
+
 
 
 OK Registrera användare (med namn och lösenord minst)

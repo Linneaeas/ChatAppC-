@@ -79,7 +79,7 @@ class Program
 
                     // Process the received message based on the protocol:
                     ProcessMessage(client, message);
-                    // Send the connected clients list to each client: //!! ONLY Works for the first client that logs in!!!!!!!!!
+                    // Send the connected clients list to each client: 
                     SendConnectedClientsList(client);
                 }
             }
@@ -221,8 +221,9 @@ class Program
     static void SendConnectedClientsList(Socket client)
     {
         string connectedClientsList = string.Join(",", loggedInClients);
-        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
+        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");//14.B
         client.Send(data);
     }
+
 }
 
