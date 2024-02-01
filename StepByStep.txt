@@ -57,7 +57,15 @@ b. We call on handleCreateAccountResponse in "SendAccountInformation"
 a. SERVER: If username exists, Account fails and CLIENT:user is directed to main menu. If it dont exists, the account is created  and user is directed to main menu.
 b. SERVER Calling on that function in CREATE_ACCOUNT Case.
 
+12. CREATED LISTS
+a. For connectedClients - when a client connected-adds to list.
+b. For loggedInClients- when a user logs in-adds to list.
+c. In LOGOUT-Removes the client from the loggedInClients and the connectedClients.
+d. Send the ConnectedClientsList to the Client.
+e. CLient recieves the list
 
+12. RESPONSE HANDLE ERROR- when a client is logged in, the connected/logged in users displays for the first person that logs in.
+when the second user logs in, it comes invalid server response. We solved this by creating separate response variables instead of "response", we have now "loginRespone", "createAccountResponse", and we are planning on doing the same for logout, public messages, and private messages. 
 
 If successfull call on function that handles the message rooms. 
 /- Informerar alla användare som redan är inloggade (e.g. <user> har loggat in!) 

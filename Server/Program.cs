@@ -13,9 +13,11 @@ class Program
     static IMongoCollection<BsonDocument>? usersCollection;
 
     // List to store all connected client sockets:
+    //12.A
     static List<Socket> connectedClients = new List<Socket>();
 
     // List to store logged-in client usernames:
+    //12.B
     static List<string> loggedInClients = new List<string>();
 
     // Method to send a list of connected clients to a specific client: 
@@ -92,7 +94,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, response;//kanske CreateAccountResponse eller Objekt: respons som ar av typ createAccount/Login etc.
+        string username, password, createAccountResponse, loginResponse;//kanske CreateAccountResponse eller Objekt: respons som ar av typ createAccount/Login etc.
         byte[] responseData;
 
 
@@ -111,8 +113,8 @@ class Program
                 if (IsUsernameExists(username))//11.B
                 {
                     // Send a response back to the client indicating that the account creation failed:
-                    response = "ACCOUNT_CREATION_FAILED";
-                    responseData = Encoding.UTF8.GetBytes(response);
+                    createAccountResponse = "ACCOUNT_CREATION_FAILED";
+                    responseData = Encoding.UTF8.GetBytes(createAccountResponse);
                     client.Send(responseData);
                 }
                 else
@@ -124,8 +126,8 @@ class Program
                     Console.WriteLine($"Creating account for user: {username} with password: {password}");//5.C Confirmation registration has gone through.
 
                     // Send a response back to the client indicating successful account creation:
-                    response = "ACCOUNT_CREATED"; //5.B
-                    responseData = Encoding.UTF8.GetBytes(response);
+                    createAccountResponse = "ACCOUNT_CREATED"; //5.B
+                    responseData = Encoding.UTF8.GetBytes(createAccountResponse);
                     client.Send(responseData);
                 }
                 break;
@@ -139,14 +141,14 @@ class Program
                 // Check if the provided credentials are valid:
                 if (AuthenticateUser(username, password))//7.E
                 {
-                    connectedClients.Add(client);
-                    loggedInClients.Add(username);
+                    connectedClients.Add(client);//12.A
+                    loggedInClients.Add(username);//12.B
 
                     //Displays in the server terminal:
                     Console.WriteLine($"Login successful for user: {username}");
                     // Send a response back to the client indicating successful login:
-                    response = "LOGIN_SUCCESSFUL";
-                    responseData = Encoding.UTF8.GetBytes(response);
+                    loginResponse = "LOGIN_SUCCESSFUL";
+                    responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
                 }
                 else
@@ -154,8 +156,8 @@ class Program
                     //Displays in the server terminal:
                     Console.WriteLine($"Login failed for user: {username}");
                     // Send a response back to the client indicating failed login:
-                    response = "LOGIN_FAILED";
-                    responseData = Encoding.UTF8.GetBytes(response);
+                    loginResponse = "LOGIN_FAILED";
+                    responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
                 }
                 break;
@@ -164,8 +166,8 @@ class Program
             case "LOGOUT":
                 username = parts[1];
                 // Remove the client from the lists:
-                connectedClients.Remove(client);
-                loggedInClients.Remove(username);
+                connectedClients.Remove(client);//12.C
+                loggedInClients.Remove(username);// 12.b
                 Console.WriteLine($"User {username} logged out.");
                 break;
 
@@ -214,6 +216,8 @@ class Program
         // If an existing user is found, the username already exists:
         return existingUser != null;
     }
+
+    //12.D
     static void SendConnectedClientsList(Socket client)
     {
         string connectedClientsList = string.Join(",", loggedInClients);

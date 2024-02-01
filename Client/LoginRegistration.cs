@@ -87,10 +87,10 @@ namespace Client
             // Read & decode the server's response:
             byte[] responseBytes = new byte[5000];
             int responseLength = clientSocket.Receive(responseBytes);
-            string response = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            string createAccountResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
 
             // Process the server's response & outcome depending on which response:
-            switch (response)
+            switch (createAccountResponse)
             {
                 case "ACCOUNT_CREATED":
                     Console.WriteLine("Kontot är nu skapat!");//5.B
@@ -152,13 +152,15 @@ namespace Client
             // Read the server's response
             byte[] responseBytes = new byte[5000];
             int responseLength = clientSocket.Receive(responseBytes);
-            string response = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            string loginResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
 
             // Process the server's response & outcome depending on which response:
-            switch (response)
+            switch (loginResponse)
             {
                 case "LOGIN_SUCCESSFUL":
                     Console.WriteLine("Välkommen till Chattis!");
+                    HandleConnectedClientsResponse(clientSocket);
+
                     break;
 
                 case "LOGIN_FAILED":
@@ -172,37 +174,26 @@ namespace Client
             }
         }
 
-        // "Client might be expecting responses for both actions sequentially.
-        //  If the server sends the list of connected clients after the first login, but the client is still expecting a response for account creation,
-        //  it might interpret the connected clients list as an unexpected response.
-        //  Here's a possible modification to address this issue:"
+        public static void HandleConnectedClientsResponse(Socket clientSocket)
+        {
+            // Read the server's response
+            byte[] responseBytes = new byte[5000];
+            int responseLength = clientSocket.Receive(responseBytes);
+            string connectedClientsResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
 
-        //  Lösning vi är tveksamma till, tror det finns en bättre lösning.
-        // T.ex kanske klienten blir förvirrad av "response", kanske behövs tydliggöras vilket respons som ar vad?
+            // Process the server's response & outcome depending on which response:
+            if (connectedClientsResponse.StartsWith("CONNECTED_CLIENTS|"))
+            {
+                // Extract the connected clients list from the response
+                string connectedClientsList = connectedClientsResponse.Substring("CONNECTED_CLIENTS|".Length);
 
-        /* public static void ReceiveServerResponses(Socket clientSocket)
-         {
-             while (true)
-             {
-                 byte[] responseBytes = new byte[5000];
-                 int responseLength = clientSocket.Receive(responseBytes);
-                 string response = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
-
-                 // Process the server's response
-                 switch (response)
-                 {
-                     // Handle responses based on your application's requirements
-                     case "CONNECTED_CLIENTS":
-                         // Parse and display the list of connected clients
-                         Console.WriteLine("Connected Clients: " + response.Substring("CONNECTED_CLIENTS|".Length));
-                         break;
-                     // Add more cases for other response types as needed
-                     default:
-                         Console.WriteLine("Unexpected response from the server in RecieveServerResponses: " + response);
-                         break;
-                 }
-             }
-         }*/
-
+                // Process the connected clients list
+                Console.WriteLine("Inloggade just nu: " + connectedClientsList);
+            }
+            else
+            {
+                Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse.");
+            }
+        }
     }
 }

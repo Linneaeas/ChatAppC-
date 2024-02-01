@@ -38,7 +38,7 @@ namespace Client
             string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
             // Display the response from the server:
-            Console.WriteLine("Server response: " + response);
+            Console.WriteLine("Server response in Program.cs Client: " + response);
 
             // Wait for user input before closing the console (?)????????????????????????????????????????????? WHY NEED THIS?//LS
             Console.ReadLine();
