@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace Client
@@ -141,13 +142,13 @@ namespace Client
             clientSocket.Send(data);
 
             // Handle the response from the server with the separate method:
-            HandleLoginResponse(clientSocket);
+            HandleLoginResponse(clientSocket, user);
         }
 
         //
         /*8.A + 10 RECIVE & PROCESS LOGIN RESPONSE FROM SERVER------------------------------------------------RECIVE & PROCESS LOGIN RESPONSE FROM SERVER  8.A+10 */
         //
-        public static void HandleLoginResponse(Socket clientSocket)
+        public static void HandleLoginResponse(Socket clientSocket, User user)
         {
             // Read the server's response
             byte[] loginData = new byte[5000];
@@ -160,9 +161,9 @@ namespace Client
                 case "LOGIN_SUCCESSFUL":
                     //Call function to show the 30 last messages connected to that user
                     Console.WriteLine("Välkommen till Chattis!");
-                    SendGetConnectedClientsRequest(clientSocket);//Call the method that collects the logged in users// 15.D
+                    SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users// 15.D
                     HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
-                    Chattis.ChattisMenu(clientSocket); //15.B
+                    ChattisMenu(clientSocket, user); //15.B
                     break;
 
                 case "LOGIN_FAILED":
@@ -172,6 +173,29 @@ namespace Client
 
                 default:
                     Console.WriteLine("Unexpected response from the server in HandleLoginResponse.");
+                    break;
+            }
+        }
+
+        //ADDED HANDLE LOGOUT RESPONSE
+        public static void HandleLogoutResponse(Socket clientSocket)
+        {
+            // Read the server's response
+            byte[] logoutData = new byte[5000];
+            int responseLength = clientSocket.Receive(logoutData);
+            string logoutResponse = Encoding.UTF8.GetString(logoutData, 0, responseLength);//13
+
+            // Process the server's response & outcome depending on which response:
+            switch (logoutResponse)
+            {
+                case "LOGOUT_SUCCESSFUL":
+                    Console.WriteLine("Du är nu utloggad");
+                    MainMenu(clientSocket);
+                    break;
+
+
+                default:
+                    Console.WriteLine("Unexpected response from the server in HandleLogOutResponse.");
                     break;
             }
         }
@@ -206,14 +230,73 @@ namespace Client
         //
         /*15.C SPECIFIC REQUEST FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC REQUEST FOR CONNECTED CLIENTS 15.C */
         //
-        public static void SendGetConnectedClientsRequest(Socket clientSocket)
+        public static void SendConnectedClientsListRequest(Socket clientSocket) //FUNKTION SOM BER SERVERN SKICKA LISTAN
         {
 
-            string getConnectedClientsRequest = "GET_CONNECTED_CLIENTS";
-            byte[] connectedClientsData = Encoding.UTF8.GetBytes(getConnectedClientsRequest);
+            string getConnectedClientsList = "GET_CONNECTED_CLIENTS";
+            byte[] connectedClientsData = Encoding.UTF8.GetBytes(getConnectedClientsList);
 
 
             clientSocket.Send(connectedClientsData);
         }
+
+        //ADDED LOGOUT REQUEST
+
+
+        public static void SendLogoutRequest(Socket clientSocket, User user)
+        {
+            // Create a new User instance specifically for current users:
+            // User currentUser = new User();
+            string getLogoutRequest = $"LOGOUT|{user.UserName}";
+            byte[] logoutData = Encoding.UTF8.GetBytes(getLogoutRequest);
+
+
+            clientSocket.Send(logoutData);
+
+            HandleLogoutResponse(clientSocket);
+        }
+
+        public static void ChattisMenu(Socket clientSocket, User user)
+        {
+            Console.WriteLine("Chattis Meny:");
+            Console.WriteLine("Visa denna meny igen, skriv: ^meny");
+            Console.WriteLine("Visa inloggade användare, skriv: ^inloggade");
+            Console.WriteLine("Logga ut, skriv: ^loggout");
+            Console.WriteLine("För att skriva ett privatmeddelande, skriv: ^privat/Användarnamn");
+
+            while (true)
+            {
+                string? userInput = Console.ReadLine();
+
+                {
+                    switch (userInput)
+                    {
+                        case "^meny":
+                            ChattisMenu(clientSocket, user); //Show Chattis Meny
+                            break;
+
+                        case "^inloggade":
+                            SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users
+                            HandleConnectedClientsResponse(clientSocket);// Call the method that displays logged in users
+                            break;
+
+                        case "^loggaut":
+                            SendLogoutRequest(clientSocket, user);//Call the method that collects the logged in users
+                            HandleLogoutResponse(clientSocket);// Call the method that displays logged in 
+                            break;
+
+                        case "^privat/":
+                            Console.WriteLine("Skicka privatmeddelande funktion");//Add and call function for lsending a private message
+                            break;
+
+                        default:
+                            Console.WriteLine("Okänt kommando. Försök igen."); // Meddelande vid okänt kommando
+                            break;
+                    }
+                }
+
+            }
+        }
+
     }
 }

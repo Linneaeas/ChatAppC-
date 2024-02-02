@@ -78,10 +78,13 @@ c. Since the connectedclients list was sent immidiatly when a user connects, I h
 !! Now it worked for the first user loggin in. But for the second user it got an unexpected response in HandleLoginResponse. So I realized that the program got confused about the response. 
 d. So i decided to take away the automatic sending of the list when each users connect(server), and then specifically asking for it upon login(The same as when the user request the list)
 
+2. Log out function-call that in the menu option. OK
+
+
 NEXT STEP:
 First check what's added and what you think about the call commands. 
 1. Show "this person joined" to everyone when a user logs in. 
-2. Log out function-call that in the menu option.
+
 3. Show "this person left" to everyone when a user logs out/leave. 
 4. Functionality for public messages. (showing "you" on the person who send it and username for everyone else)
 5. Functionality for private messages.
@@ -122,3 +125,6 @@ Se historik på meddelande (upp till 30 meddelanden)
 
 IF WE GOT TIME:
 - The character "|" can't be allowed in the user inputs since the system will split everything
+- när man får upp listan på alla som är inloggade, exkludera den currenuser 
+
+privatmeddelande

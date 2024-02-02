@@ -92,7 +92,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse;
+        string username, password, createAccountResponse, loginResponse, logoutResponse; //Added logoutResponse
         byte[] responseData;
 
 
@@ -144,6 +144,8 @@ class Program
 
                     //Displays in the server terminal:
                     Console.WriteLine($"Login successful for user: {username}");
+                    // Broadcast the login message to all connected clients:
+
                     loginResponse = "LOGIN_SUCCESSFUL";
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
@@ -161,18 +163,33 @@ class Program
 
 
             case "LOGOUT":
-                username = parts[1];
-                // Remove the client from the lists:
-                connectedClients.Remove(client);//12.C
-                loggedInClients.Remove(username);// 12.b
+                if (parts.Length == 2) // Check if there is exactly one part (username)
+                {
+                    username = parts[1];
+                    // Remove the client from the lists:
 
+                    connectedClients.Remove(client);
+                    loggedInClients.Remove(username);
+                    logoutResponse = "LOGOUT_SUCCESSFUL";
+                    responseData = Encoding.UTF8.GetBytes(logoutResponse);
+                    client.Send(responseData);
+                }
+                else
+                {
+                    // Handle unexpected format of "LOGOUT" message
+                    Console.WriteLine("Invalid format for LOGOUT message.");
+                }
                 break;
+
+            //  If a user requests the list of connected users, the serevr send this 
             case "GET_CONNECTED_CLIENTS":
-                SendConnectedClientsList(client);
+                {
+                    SendConnectedClientsList(client);
+                }
                 break;
 
             default:
-                Console.WriteLine("Invalid message received in LOGOUT.");
+                Console.WriteLine("Invalid message received in ProcessMessage.");
                 break;
         }
     }
@@ -224,5 +241,4 @@ class Program
         byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
         client.Send(data);
     }
-
 }
