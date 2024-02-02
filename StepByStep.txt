@@ -71,50 +71,37 @@ when the second user logs in, it comes invalid server response. We solved this b
 a. Created a "HandleConnectedClientsResponse".
 b. Adjusted the server SendConnectedClientsList to include a Prefix to tell the client that this is a ConnectedClients Response.
 
+15. GOT STUCK ON NOTIFICATION REG LOGIN SO I CONTINUED! ADDED 2FEB: 
+a. Created "Chattis Meny" class.
+b. Calling ChattisMeny in case "LOGIN_SUCCESSFUL"
+c. Since the connectedclients list was sent immidiatly when a user connects, I had to create a function to specifically request for that list SendConnectedClientsList. 
+!! Now it worked for the first user loggin in. But for the second user it got an unexpected response in HandleLoginResponse. So I realized that the program got confused about the response. 
+d. So i decided to take away the automatic sending of the list when each users connect(server), and then specifically asking for it upon login(The same as when the user request the list)
 
 NEXT STEP:
+First check what's added and what you think about the call commands. 
 1. Show "this person joined" to everyone when a user logs in. 
-2. Show "this person left" to everyone when a user logs out/leave. 
+2. Log out function-call that in the menu option.
+3. Show "this person left" to everyone when a user logs out/leave. 
+4. Functionality for public messages. (showing "you" on the person who send it and username for everyone else)
+5. Functionality for private messages.
 
-2. Create a main menu for Chattis that displays when to the user upon login + when a user writes a specific message input.(ex. a prefix that lets the program know that this is a command.)
-Sugggestion: 
-CHATTIS MENY(any other command would be read as a public message)
-*To show this meny, type: ^ShowMenu 
-*To show logged in users, type: ^ShowLoggedIn
-*To log out, close the console or type: ^LogOut
-*To write a private message, type: ^Private followed by the username, ex: ^PrivateElin
+OK Show this menu function-call that in the menu option for show menu.
+OK  Show Logged in users-call the connected users list in the menu option.
+ 
 
-
-3. Show this menu function-call that in the menu option for show menu.
-4. Show Logged in users-call the connected users list in the menu option.
-5. Log out function-call that in the menu option.
-6. Functionality for public messages.
-7. Functionality for private rooms/messages.
-
-
-Suggestion: Display ex: "Elin send you a private message, type ^PrivateElin to display message. 
-
-Suggestion: Display when entered a private chatroom: "This is a private chat between (you) and (the other person)" ex: 
-"This is a private chatroom between Elin and Angelica. To go back to the public chatroom, type: ^Public ".
 
  Functionality Storage: 
-Create a variable called "privateMessages" with a parameter of between which 2 users it refers to(?) Send the messages to the server that handles the storage in mongodb. 
-Same thing with "publicMessages". 
+Create a variable called "privateMessages" with a parameter of which 2 users it schould be saved to.(?)Send the messages to the server that handles the storage in mongodb. 
+Same thing with "publicMessages" thats saved to all users. 
 
-Private messages:
-When a person writes a private message to someone, it creates a room/array ex"Private<User2></User2>" sends it to the server 
-that recieves it and stores it in a container in mongoDB called ex "PrivateElinAngelica".
-there it stores the 30 most recent chatmessages. Everytime that room is entered, the last 30 messeges are recived from the server(the server needs to send them) displayed. 
 
-Public messages: 
-Store the 30 most recent messages in a room/array+container called ex "PublicMessages". 
-Everytime that room is entered, the last 30 messeges are displayed. 
 
 Everytime someone enters the chatroom, server needs to send the last 30 messeges of that room->the client needs to recive them and display them. 
 
 Each time a message is sent, it updates the server with the new message. The message that is 31 messages back will get deleted for each new message in that room. 
 
-spara medd till anvandare-varje anv har en egen list. Nar man skickar proivat mmedd sparar man medd privat.
+spara medd till anvandare-varje anv har en egen list. Nar man skickar proivat mmedd sparar man medd privat pa den anvandaren.
 spara allt i en collection-variabel kopplar till anvandare. Globalt el privat- om privat pekar till anv med ex id. 
 
 

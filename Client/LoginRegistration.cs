@@ -21,10 +21,9 @@ namespace Client
         //
         public static void MainMenu(Socket clientSocket)
         {
-            Console.WriteLine("Huvud Menu:");
+            Console.WriteLine("Huvud Menu. Vad vill du göra?:");
             Console.WriteLine("1. Skapa konto");
             Console.WriteLine("2. Logga in");
-            Console.WriteLine("Vad vill du göra?: ");
             string? userInput = Console.ReadLine();
 
             // Process the user input and perform actions based on the selected option:
@@ -151,16 +150,19 @@ namespace Client
         public static void HandleLoginResponse(Socket clientSocket)
         {
             // Read the server's response
-            byte[] data = new byte[5000];
-            int responseLength = clientSocket.Receive(data);
-            string loginResponse = Encoding.UTF8.GetString(data, 0, responseLength);//13
+            byte[] loginData = new byte[5000];
+            int responseLength = clientSocket.Receive(loginData);
+            string loginResponse = Encoding.UTF8.GetString(loginData, 0, responseLength);//13
 
             // Process the server's response & outcome depending on which response:
             switch (loginResponse)
             {
                 case "LOGIN_SUCCESSFUL":
+                    //Call function to show the 30 last messages connected to that user
                     Console.WriteLine("Välkommen till Chattis!");
-                    HandleConnectedClientsResponse(clientSocket);
+                    SendGetConnectedClientsRequest(clientSocket);//Call the method that collects the logged in users// 15.D
+                    HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
+                    Chattis.ChattisMenu(clientSocket); //15.B
                     break;
 
                 case "LOGIN_FAILED":
@@ -181,9 +183,9 @@ namespace Client
         public static void HandleConnectedClientsResponse(Socket clientSocket)
         {
             // Read the server's response
-            byte[] data = new byte[5000];
-            int responseLength = clientSocket.Receive(data);
-            string connectedClientsResponse = Encoding.UTF8.GetString(data, 0, responseLength);
+            byte[] connectedClientsData = new byte[5000];
+            int responseLength = clientSocket.Receive(connectedClientsData);
+            string connectedClientsResponse = Encoding.UTF8.GetString(connectedClientsData, 0, responseLength);
 
             // Process the server's response & outcome depending on which response:
             if (connectedClientsResponse.StartsWith("CONNECTED_CLIENTS|"))
@@ -200,5 +202,18 @@ namespace Client
             }
         }
 
+
+        //
+        /*15.C SPECIFIC REQUEST FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC REQUEST FOR CONNECTED CLIENTS 15.C */
+        //
+        public static void SendGetConnectedClientsRequest(Socket clientSocket)
+        {
+
+            string getConnectedClientsRequest = "GET_CONNECTED_CLIENTS";
+            byte[] connectedClientsData = Encoding.UTF8.GetBytes(getConnectedClientsRequest);
+
+
+            clientSocket.Send(connectedClientsData);
+        }
     }
 }

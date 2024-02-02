@@ -78,7 +78,7 @@ class Program
                     // Process the received message based on the protocol:
                     ProcessMessage(client, message);
                     // Send the connected clients list to each client: 
-                    SendConnectedClientsList(client);
+                    //SendConnectedClientsList(client);//TOG BORT HARIFRAN FOR ATT ISTALLET KALLA PA DEN NAR MAN LOGGAR IN 15.D
                 }
             }
         }
@@ -142,15 +142,11 @@ class Program
                     connectedClients.Add(client);//12.A
                     loggedInClients.Add(username);//12.B
 
-
                     //Displays in the server terminal:
                     Console.WriteLine($"Login successful for user: {username}");
-
                     loginResponse = "LOGIN_SUCCESSFUL";
-
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
-
                 }
                 else
                 {
@@ -170,6 +166,9 @@ class Program
                 connectedClients.Remove(client);//12.C
                 loggedInClients.Remove(username);// 12.b
 
+                break;
+            case "GET_CONNECTED_CLIENTS":
+                SendConnectedClientsList(client);
                 break;
 
             default:
@@ -225,6 +224,5 @@ class Program
         byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
         client.Send(data);
     }
-
 
 }
