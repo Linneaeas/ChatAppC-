@@ -264,9 +264,3 @@ namespace Client
     }
 }
 
-// SendConnectedClientsListRequest(clientSocket); 
-//  HandleConnectedClientsResponse(clientSocket);
-
-//  foreach client in ConnectedClientsList{
-//      Console.WriteLine $"existingUser +(har loggat in) 
-//   }

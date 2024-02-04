@@ -13,7 +13,9 @@ namespace Client
             Console.WriteLine("Chattis Meny:");
             Console.WriteLine("Visa denna meny igen, skriv: ^meny");
             Console.WriteLine("Visa inloggade användare, skriv: ^inloggade");
-            Console.WriteLine("Logga ut, skriv: ^loggout");
+            Console.WriteLine("Logga ut, skriv: ^loggaut");
+            Console.WriteLine("Skicka meddelande till alla skriv: alla följt av meddelandet");
+            Console.WriteLine("Skicka ett privat meddelande skriv: privat användarnamnet följt av meddelandet");
 
             while (true)
             {
@@ -40,13 +42,13 @@ namespace Client
                         // Inside the default case in the switch statement
                         default:
                             // Check if the input starts with "send all"
-                            if (userInput.StartsWith("all"))
+                            if (userInput.StartsWith("alla "))
                             {
                                 // Extract the message to be sent to all users
-                                string message = userInput.Substring("all ".Length).Trim();
+                                string message = userInput.Substring("alla ".Length).Trim();
 
                                 // Formulate the message to be sent to the server for broadcasting
-                                string sendMessageRequest = $"SEND_MESSAGE|all|{message}";
+                                string sendMessageRequest = $"SEND_MESSAGE|alla|{message}";
 
                                 // Convert the message to bytes and send it to the server
                                 byte[] data = Encoding.UTF8.GetBytes(sendMessageRequest);
@@ -54,7 +56,7 @@ namespace Client
                             }
 
                             // Check if the input starts with "send"
-                            else if (userInput.StartsWith("private "))
+                            else if (userInput.StartsWith("privat "))
                             {
                                 // Extract the recipient username and message
                                 string[] parts = userInput.Split(' ', 3);
@@ -64,7 +66,7 @@ namespace Client
                                     string message = parts[2];
 
                                     // Formulate the message to be sent to the server for private messaging
-                                    string sendMessageRequest = $"SEND_MESSAGE|{user.UserName}|{toUsername}|{message}";
+                                    string sendMessageRequest = $"SEND_MESSAGE_PRIVATE|{user.UserName}|{toUsername}|{message}";
 
                                     // Convert the message to bytes and send it to the server
                                     byte[] data = Encoding.UTF8.GetBytes(sendMessageRequest);
@@ -80,8 +82,6 @@ namespace Client
                                 Console.WriteLine("Invalid command. Type ^meny for menu options.");
                             }
                             break;
-
-
                     }
                 }
             }

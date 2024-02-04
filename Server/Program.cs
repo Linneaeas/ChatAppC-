@@ -85,7 +85,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
+        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
         byte[] responseData;
 
 
@@ -174,6 +174,7 @@ class Program
                 }
                 break;
 
+
             //  If a user requests the list of connected users, the serevr send this 
             case "GET_CONNECTED_CLIENTS":
                 {
@@ -183,21 +184,16 @@ class Program
 
 
 
-            case "SEND_MESSAGE":
+            case "SEND_MESSAGE_PRIVATE":
                 string fromUsername = parts[1];
-                string toUsernamesString = parts[2];
-                List<string> toUsernames = toUsernamesString.Split(',').ToList();
+                string toUsername = parts[2];
                 chatMessage = parts[3];
 
-                DatabaseHandler.InsertMessage(fromUsername, toUsernames, chatMessage);
-                sendMessageResponse = "MESSAGE_SENT";
+                DatabaseHandler.InsertPrivateMessage(fromUsername, toUsername, chatMessage);
+                sendPrivateMessageResponse = "PRIVATE_MESSAGE_SENT";
 
-                responseData = Encoding.UTF8.GetBytes(sendMessageResponse);
+                responseData = Encoding.UTF8.GetBytes(sendPrivateMessageResponse);
                 client.Send(responseData);
-
-                // Handle unexpected format of "LOGOUT" message
-                Console.WriteLine("Invalid format for LOGOUT message.");
-
                 break;
 
             default:
@@ -213,8 +209,5 @@ class Program
         byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
         client.Send(data);
     }
-
-
-
 
 }

@@ -89,6 +89,8 @@ a. Intitilize
 b. Created function to add message(woth fromUser& toUSer) to the Database
 c. Added a case for SEND_MESSAGE and responses
 
+18. Moved DB related to it's own file. 
+
 
 Justee: Tell that if a user disconneccts it schould be marked as a logout in the server? 
 
