@@ -84,34 +84,38 @@ namespace Client
                             break;
                     }
                 }
+
             }
         }
-        /*  public static void SendAllUsersListRequest(Socket clientSocket)
-          {
-              string getAllUsersRequest = "GET_ALL_USERS";
-              byte[] allUsersData = Encoding.UTF8.GetBytes(getAllUsersRequest);
 
-              clientSocket.Send(allUsersData);
-          }
 
-          public static void HandleAllUsersResponse(Socket clientSocket)
-          {
-              // Read the server's response
-              byte[] allUsersData = new byte[5000];
-              int responseLength = clientSocket.Receive(allUsersData);
-              string allUsersResponse = Encoding.UTF8.GetString(allUsersData, 0, responseLength);
+        public static void HandleServerResponse(Socket clientSocket)
+        {
+            // Read & decode the server's response:
+            byte[] responseBytes = new byte[5000];
+            int responseLength = clientSocket.Receive(responseBytes);
+            string sendPrivateMessageResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
 
-              // Process the server's response & outcome depending on which response:
-              if (allUsersResponse.StartsWith("ALL_USERS|"))
-              {
-                  // Extract the connected clients list from the response
-                  string allUsersList = allUsersResponse.Substring("ALL_USERS|".Length);
+            // Split the response into parts using the pipe character (|) as a separator:
+            string[] parts = sendPrivateMessageResponse.Split('|');
 
-              }
-              else
-              {
-                  Console.WriteLine("Unexpected response from the server in HandleAllUsersResponse.");
-              } 
-          }*/
+            // Check the first part of the response to determine the action:
+            switch (parts[0])
+            {
+                // Process the server's response & outcome depending on which response:
+                case "PRIVATE_MESSAGE_SENT":
+                    string fromUsername = parts[1];
+                    string toUsername = parts[2];
+                    string chatMessage = parts[3];
+
+                    // Handle the private message (print or do whatever is needed)
+                    Console.WriteLine($"Private message from {fromUsername} to {toUsername}: {chatMessage}");
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid response received in HandleServerResponse.");
+                    break;
+            }
+        }
     }
 }

@@ -183,7 +183,6 @@ class Program
                 break;
 
 
-
             case "SEND_MESSAGE_PRIVATE":
                 string fromUsername = parts[1];
                 string toUsername = parts[2];
@@ -194,6 +193,7 @@ class Program
 
                 responseData = Encoding.UTF8.GetBytes(sendPrivateMessageResponse);
                 client.Send(responseData);
+                Console.WriteLine("PRIVATE_MESSAGE_SENT from server to client");
                 break;
 
             default:

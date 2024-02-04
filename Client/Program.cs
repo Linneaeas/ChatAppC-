@@ -37,11 +37,13 @@ namespace Client
             // Convert the received bytes to a string response:
             string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
+            Chattis.HandleServerResponse(clientSocket);
             // Display the response from the server:
             Console.WriteLine("Server response in Program.cs Client: " + response);
 
             // Wait for user input before closing the console
             Console.ReadLine();
+
         }
     }
 }

@@ -78,28 +78,5 @@ public class DatabaseHandler
             Console.WriteLine($"Invalid private message: The sender username '{fromUsername}' does not exist.");
         }
     }
-
-
-
 }
 
-
-
-/*  static void SendAllUsersList(Socket client)
-    {
-        // Projection to only get the "username" field
-        var projection = Builders<BsonDocument>.Projection.Include("username");
-
-        // Query MongoDB to get the list of all usernames
-        var allUsers = usersCollection?.Find(new BsonDocument()).Project(projection).ToList();
-
-        // Extract usernames from the documents
-        List<string> allUsernames = allUsers?.Select(doc => doc["username"]?.AsString).ToList() ?? new List<string>();
-
-        // Create a response message
-        string allUsersResponse = $"ALL_USERS|{string.Join(",", allUsernames)}";
-
-        // Send the response to the client
-        byte[] data = Encoding.UTF8.GetBytes(allUsersResponse);
-        client.Send(data);
-    }*/
