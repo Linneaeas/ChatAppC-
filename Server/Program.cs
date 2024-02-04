@@ -9,14 +9,9 @@ using MongoDB.Driver;
 namespace Server;
 class Program
 {
-    //6.D Initialize MongoDB Collection of users:
-    static IMongoCollection<BsonDocument>? usersCollection;
-    private static IMongoCollection<BsonDocument>? messagesCollection; //ADDED
-
     // List to store all connected client sockets:
     //12.A
     static List<Socket> connectedClients = new List<Socket>();
-
     // List to store logged-in client usernames:
     //12.B
     static List<string> loggedInClients = new List<string>();
@@ -24,12 +19,8 @@ class Program
     // 2.A CREATE SERVER
     static void Main(string[] args)
     {
-        //6.E Set up MongoDB Connection:
-        //The code establishes a connection to a MongoDB server running on localhost at port 27017.It selects the database named "ChatApp" and gets a collection named "users" as an IMongoCollection<BsonDocument>.
-        MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
-        IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
-        usersCollection = database.GetCollection<BsonDocument>("users");
-        messagesCollection = database.GetCollection<BsonDocument>("messages");//ADDED
+
+        DatabaseHandler.Initialize();
 
         // List to store connected client sockets:
         List<Socket> sockets = new List<Socket>();
@@ -110,7 +101,7 @@ class Program
 
 
                 // Check if the username already exists in the MongoDB collection:
-                if (IsUsernameExists(username))//11.B
+                if (DatabaseHandler.IsUsernameExists(username))//11.B
                 {
                     // Send a response back to the client indicating that the account creation failed:
                     createAccountResponse = "ACCOUNT_CREATION_FAILED";
@@ -120,7 +111,7 @@ class Program
                 else
                 {
                     // Insert user into MongoDB:
-                    InsertUser(username, password);//6.G
+                    DatabaseHandler.InsertUser(username, password);//6.G
 
                     // Process the account creation request (you may want to add more validation):
                     Console.WriteLine($"Creating account for user: {username} with password: {password}");//5.C Confirmation registration has gone through.
@@ -139,7 +130,7 @@ class Program
                 password = parts[2];
 
                 // Check if the provided credentials are valid:
-                if (AuthenticateUser(username, password))//7.E
+                if (DatabaseHandler.AuthenticateUser(username, password))//7.E
                 {
                     connectedClients.Add(client);//12.A
                     loggedInClients.Add(username);//12.B
@@ -190,13 +181,15 @@ class Program
                 }
                 break;
 
+
+
             case "SEND_MESSAGE":
                 string fromUsername = parts[1];
                 string toUsernamesString = parts[2];
                 List<string> toUsernames = toUsernamesString.Split(',').ToList();
                 chatMessage = parts[3];
 
-                InsertMessage(fromUsername, toUsernames, chatMessage);
+                DatabaseHandler.InsertMessage(fromUsername, toUsernames, chatMessage);
                 sendMessageResponse = "MESSAGE_SENT";
 
                 responseData = Encoding.UTF8.GetBytes(sendMessageResponse);
@@ -207,51 +200,10 @@ class Program
 
                 break;
 
-
             default:
                 Console.WriteLine("Invalid message received in ProcessMessage.");
                 break;
         }
-    }
-
-    /*7.D CHECKS THAT USER & PASSWORD ARE CORRECT/EXISTS */
-    static bool AuthenticateUser(string username, string password)
-    {
-        // Query MongoDB to check if the provided username and password match any stored user:
-        var filter = Builders<BsonDocument>.Filter.And(
-            Builders<BsonDocument>.Filter.Eq("username", username),
-            Builders<BsonDocument>.Filter.Eq("password", password)
-        );
-
-        var user = usersCollection.Find(filter).FirstOrDefault();
-
-        // If a user is found, authentication is successful:
-        return user != null;
-    }
-
-    /*6.F ADDS USER TO MONGODB*/
-    static void InsertUser(string username, string password)
-    {
-        var document = new BsonDocument
-            {
-                { "username", username },
-                { "password", password }
-            };
-
-        usersCollection?.InsertOne(document);
-
-        Console.WriteLine($"User {username} inserted into MongoDB.");
-    }
-
-    /*11 CHECK IF USERNAME EXISTS*/
-    static bool IsUsernameExists(string username)
-    {
-        // Query MongoDB to check if the provided username already exists:
-        var filter = Builders<BsonDocument>.Filter.Eq("username", username);
-        var existingUser = usersCollection?.Find(filter).FirstOrDefault();
-
-        // If an existing user is found, the username already exists:
-        return existingUser != null;
     }
 
     //12.D
@@ -263,18 +215,6 @@ class Program
     }
 
 
-    //ADDED
-    public static void InsertMessage(string fromUsername, List<string> toUsernames, string chatMessage)
-    {
-        var document = new BsonDocument
-    {
-        { "from", fromUsername },
-        { "to", new BsonArray(toUsernames) },
-        { "chatMessage", chatMessage }
-    };
-        messagesCollection?.InsertOne(document);
-        Console.WriteLine($"Message {chatMessage} from {fromUsername} to {string.Join(",", toUsernames)} inserted into MongoDB.");
-    }
+
+
 }
-
-

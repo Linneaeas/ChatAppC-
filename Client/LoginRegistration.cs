@@ -231,7 +231,6 @@ namespace Client
             else
             {
                 Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse.");
-
             }
         }
 
