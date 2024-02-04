@@ -71,14 +71,26 @@ when the second user logs in, it comes invalid server response. We solved this b
 a. Created a "HandleConnectedClientsResponse".
 b. Adjusted the server SendConnectedClientsList to include a Prefix to tell the client that this is a ConnectedClients Response.
 
-15. GOT STUCK ON NOTIFICATION REG LOGIN SO I CONTINUED! ADDED 2FEB: 
-a. Created "Chattis Meny" class.
+15. 
+a. Created "Chattis Meny" class.^
 b. Calling ChattisMeny in case "LOGIN_SUCCESSFUL"
 c. Since the connectedclients list was sent immidiatly when a user connects, I had to create a function to specifically request for that list SendConnectedClientsList. 
 !! Now it worked for the first user loggin in. But for the second user it got an unexpected response in HandleLoginResponse. So I realized that the program got confused about the response. 
 d. So i decided to take away the automatic sending of the list when each users connect(server), and then specifically asking for it upon login(The same as when the user request the list)
 
-2. Log out function-call that in the menu option. OK
+16. LOG OUT FUNCTION
+a. Client: Added SendLogoutRequest to send the request to the server. 
+b. Client: Added HandleLogOutResponse to handle the response from the server. 
+c. Server: Added a case&response for "LOGOUT" to send a response to the client & removes the user from the lists of logged in users. 
+d. Client: Call the SendLogoutRequest in the menu option for Logout. 
+
+17. Added messageCollection to MongoDB
+a. Intitilize 
+b. Created function to add message(woth fromUser& toUSer) to the Database
+c. Added a case for SEND_MESSAGE and responses
+
+
+Justee: Tell that if a user disconneccts it schould be marked as a logout in the server? 
 
 
 NEXT STEP:
@@ -92,9 +104,13 @@ First check what's added and what you think about the call commands.
 OK Show this menu function-call that in the menu option for show menu.
 OK  Show Logged in users-call the connected users list in the menu option.
  
+Loopa igenom connected clients list skicka medd till dem,  kalla pa funktion i Login successfull -Ta emot svar i clienten.
+  
+
+WE only have one thread thats why only one thin at once
 
 
- Functionality Storage: 
+Functionality Storage: 
 Create a variable called "privateMessages" with a parameter of which 2 users it schould be saved to.(?)Send the messages to the server that handles the storage in mongodb. 
 Same thing with "publicMessages" thats saved to all users. 
 
@@ -127,4 +143,9 @@ IF WE GOT TIME:
 - The character "|" can't be allowed in the user inputs since the system will split everything
 - när man får upp listan på alla som är inloggade, exkludera den currenuser 
 
-privatmeddelande
+I server - säg att alla inloggade ska få meddelandet om vem som loggat in-loopa igenom connectedclients
+	- ta emot meddelande i klienten
+
+För meddelanden - samma princip som för ’senduserinformation’
+
+server tar emot meddelande - skickar tillbaka meddelande och skickar med username - i client-välj att utesluta eget namn

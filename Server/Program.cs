@@ -11,6 +11,7 @@ class Program
 {
     //6.D Initialize MongoDB Collection of users:
     static IMongoCollection<BsonDocument>? usersCollection;
+    private static IMongoCollection<BsonDocument>? messagesCollection; //ADDED
 
     // List to store all connected client sockets:
     //12.A
@@ -28,6 +29,7 @@ class Program
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
         IMongoDatabase database = mongoClient.GetDatabase("ChatApp");
         usersCollection = database.GetCollection<BsonDocument>("users");
+        messagesCollection = database.GetCollection<BsonDocument>("messages");//ADDED
 
         // List to store connected client sockets:
         List<Socket> sockets = new List<Socket>();
@@ -92,7 +94,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse, logoutResponse; //Added logoutResponse
+        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
         byte[] responseData;
 
 
@@ -188,6 +190,24 @@ class Program
                 }
                 break;
 
+            case "SEND_MESSAGE":
+                string fromUsername = parts[1];
+                string toUsernamesString = parts[2];
+                List<string> toUsernames = toUsernamesString.Split(',').ToList();
+                chatMessage = parts[3];
+
+                InsertMessage(fromUsername, toUsernames, chatMessage);
+                sendMessageResponse = "MESSAGE_SENT";
+
+                responseData = Encoding.UTF8.GetBytes(sendMessageResponse);
+                client.Send(responseData);
+
+                // Handle unexpected format of "LOGOUT" message
+                Console.WriteLine("Invalid format for LOGOUT message.");
+
+                break;
+
+
             default:
                 Console.WriteLine("Invalid message received in ProcessMessage.");
                 break;
@@ -241,4 +261,20 @@ class Program
         byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
         client.Send(data);
     }
+
+
+    //ADDED
+    public static void InsertMessage(string fromUsername, List<string> toUsernames, string chatMessage)
+    {
+        var document = new BsonDocument
+    {
+        { "from", fromUsername },
+        { "to", new BsonArray(toUsernames) },
+        { "chatMessage", chatMessage }
+    };
+        messagesCollection?.InsertOne(document);
+        Console.WriteLine($"Message {chatMessage} from {fromUsername} to {string.Join(",", toUsernames)} inserted into MongoDB.");
+    }
 }
+
+

@@ -5,17 +5,18 @@ using System.Reflection.Metadata;
 using System.Text;
 
 namespace Client
+//
+/*4.A USER CLASS---------------------------------------------------------------------------------------------------------------------------USER CLASS 4.A */
+//
 {
+    public class User
+    {
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
+    }
+
     public class LoginRegistration
     {
-        //
-        /*4.A USER CLASS---------------------------------------------------------------------------------------------------------------------------USER CLASS 4.A */
-        //
-        public class User
-        {
-            public string? UserName { get; set; }
-            public string? Password { get; set; }
-        }
 
         //
         /*4.B MAIN MENU-----------------------------------------------------------------------------------------------------------------------------MAIN MENU 4.B */
@@ -72,7 +73,7 @@ namespace Client
             // Formulate a message/data structure to send to the server. Specifying that an account creation request is being made:
             string accountCreationRequest = $"CREATE_ACCOUNT|{user.UserName}|{user.Password}";
             byte[] data = Encoding.UTF8.GetBytes(accountCreationRequest);
-            // Send the account creation request to the server:
+            // Send the account creation request to the socket:
             clientSocket.Send(data);
 
             // Handle the response from the server with the separate method:
@@ -125,6 +126,8 @@ namespace Client
             Console.Write("Ange lösenord: ");
             existingUser.Password = Console.ReadLine();
 
+
+
             // Send the user information to the server for login with the separate method:
             SendLoginInformation(existingUser, clientSocket);
         }
@@ -147,6 +150,9 @@ namespace Client
 
         //
         /*8.A + 10 RECIVE & PROCESS LOGIN RESPONSE FROM SERVER------------------------------------------------RECIVE & PROCESS LOGIN RESPONSE FROM SERVER  8.A+10 */
+
+
+
         //
         public static void HandleLoginResponse(Socket clientSocket, User user)
         {
@@ -154,17 +160,20 @@ namespace Client
             byte[] loginData = new byte[5000];
             int responseLength = clientSocket.Receive(loginData);
             string loginResponse = Encoding.UTF8.GetString(loginData, 0, responseLength);//13
-
+            Console.WriteLine(loginResponse);
             // Process the server's response & outcome depending on which response:
             switch (loginResponse)
             {
                 case "LOGIN_SUCCESSFUL":
+
+                    // Broadcast the "username logged in" message to all connected clients
                     //Call function to show the 30 last messages connected to that user
                     Console.WriteLine("Välkommen till Chattis!");
                     SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users// 15.D
                     HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
-                    ChattisMenu(clientSocket, user); //15.B
+                    Chattis.ChattisMenu(clientSocket, user); //15.B
                     break;
+
 
                 case "LOGIN_FAILED":
                     Console.WriteLine("Login missslyckades, försök igen.");
@@ -177,7 +186,8 @@ namespace Client
             }
         }
 
-        //ADDED HANDLE LOGOUT RESPONSE
+
+        //16.B ADDED HANDLE LOGOUT RESPONSE
         public static void HandleLogoutResponse(Socket clientSocket)
         {
             // Read the server's response
@@ -199,8 +209,6 @@ namespace Client
                     break;
             }
         }
-
-
         //
         /*14.A SPECIFIC RESPONSE FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC RESPONSE FOR CONNECTED CLIENTS 14.A */
         //
@@ -223,9 +231,9 @@ namespace Client
             else
             {
                 Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse.");
+
             }
         }
-
 
         //
         /*15.C SPECIFIC REQUEST FOR CONNECTED CLIENTS----------------------------------------------------------------------SPECIFIC REQUEST FOR CONNECTED CLIENTS 15.C */
@@ -240,9 +248,7 @@ namespace Client
             clientSocket.Send(connectedClientsData);
         }
 
-        //ADDED LOGOUT REQUEST
-
-
+        //16.ADDED LOGOUT REQUEST 
         public static void SendLogoutRequest(Socket clientSocket, User user)
         {
             // Create a new User instance specifically for current users:
@@ -256,47 +262,12 @@ namespace Client
             HandleLogoutResponse(clientSocket);
         }
 
-        public static void ChattisMenu(Socket clientSocket, User user)
-        {
-            Console.WriteLine("Chattis Meny:");
-            Console.WriteLine("Visa denna meny igen, skriv: ^meny");
-            Console.WriteLine("Visa inloggade användare, skriv: ^inloggade");
-            Console.WriteLine("Logga ut, skriv: ^loggout");
-            Console.WriteLine("För att skriva ett privatmeddelande, skriv: ^privat/Användarnamn");
-
-            while (true)
-            {
-                string? userInput = Console.ReadLine();
-
-                {
-                    switch (userInput)
-                    {
-                        case "^meny":
-                            ChattisMenu(clientSocket, user); //Show Chattis Meny
-                            break;
-
-                        case "^inloggade":
-                            SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users
-                            HandleConnectedClientsResponse(clientSocket);// Call the method that displays logged in users
-                            break;
-
-                        case "^loggaut":
-                            SendLogoutRequest(clientSocket, user);//Call the method that collects the logged in users
-                            HandleLogoutResponse(clientSocket);// Call the method that displays logged in 
-                            break;
-
-                        case "^privat/":
-                            Console.WriteLine("Skicka privatmeddelande funktion");//Add and call function for lsending a private message
-                            break;
-
-                        default:
-                            Console.WriteLine("Okänt kommando. Försök igen."); // Meddelande vid okänt kommando
-                            break;
-                    }
-                }
-
-            }
-        }
-
     }
 }
+
+// SendConnectedClientsListRequest(clientSocket); 
+//  HandleConnectedClientsResponse(clientSocket);
+
+//  foreach client in ConnectedClientsList{
+//      Console.WriteLine $"existingUser +(har loggat in) 
+//   }
