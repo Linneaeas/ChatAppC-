@@ -92,7 +92,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse, sendPublicMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
+        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse, sendPublicMessageResponse, sendLoginAlert; //Added logoutResponse & chatmessage & sendMessageRespons
         byte[] responseData;
 
 
@@ -138,19 +138,40 @@ class Program
 
                 // Check if the provided credentials are valid:
                 if (DatabaseHandler.AuthenticateUser(username, password))//7.E
+
                 {
-                    connectedClients.Add(client);//12.A
-                    loggedInClients.Add(username);//12.B
-
-                    //Displays in the server terminal:
-                    Console.WriteLine($"Login successful for user: {username}");
-                    // Broadcast the login message to all connected clients:
-
                     loginResponse = "LOGIN_SUCCESSFUL";
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
 
+                    Console.WriteLine($"Login successful for user: {username}");
+
+                    sendLoginAlert = $"LOGIN_ALERT|{username}|har loggat in";
+
+                    responseData = Encoding.UTF8.GetBytes(sendLoginAlert);
+
+
+                    foreach (Socket clientSocket in connectedClients)
+                    {
+                        clientSocket.Send(responseData);
+                    }
+                    Console.WriteLine("LOGIN_ALERT from server to client");
+
+                    connectedClients.Add(client);//12.A
+                    loggedInClients.Add(username);//12.B
+
+                    //Displays in the server terminal:
+
+                    // Broadcast the login message to all connected clients:
+
+
+
+                    Console.WriteLine($"Login successful for user: {username}");
                     socketUserNames[username] = client;
+
+
+
+
                 }
                 else
                 {
@@ -240,8 +261,8 @@ class Program
     static void SendConnectedClientsList(Socket client)
     {
         string connectedClientsList = string.Join(",", loggedInClients);
-        byte[] data = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
-        client.Send(data);
+        byte[] connectedData = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
+        client.Send(connectedData);
     }
 
 }

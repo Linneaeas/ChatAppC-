@@ -131,10 +131,6 @@ namespace Client
             // Send the user information to the server for login with the separate method:
             SendLoginInformation(existingUser, clientSocket);
 
-            // Extract the recipient username and message
-
-
-
 
         }
 

@@ -15,8 +15,8 @@ namespace Client
             Console.WriteLine("Visa denna meny igen, skriv: ^meny");
             Console.WriteLine("Visa inloggade användare, skriv: ^inloggade");
             Console.WriteLine("Logga ut, skriv: ^loggaut");
+            Console.WriteLine("Privat meddelande, skriv: ^privat");
             Console.WriteLine("Skicka meddelande till alla skriv: alla följt av meddelandet");
-            Console.WriteLine("Skicka ett privat meddelande skriv: privat användarnamnet följt av meddelandet");
             Console.WriteLine("----------------------------");
 
             while (true)
@@ -30,29 +30,30 @@ namespace Client
                     switch (userInput)
                     {
                         case "^meny":
-                            ChattisMenu(clientSocket, user); //Show Chattis Meny
+                            ChattisMenu(clientSocket, user);
                             break;
 
                         case "^inloggade":
-                            LoginRegistration.SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users
-                            LoginRegistration.HandleConnectedClientsResponse(clientSocket);// Call the method that displays logged in users
+                            LoginRegistration.SendConnectedClientsListRequest(clientSocket);
+                            LoginRegistration.HandleConnectedClientsResponse(clientSocket);
                             break;
 
                         case "^loggaut":
-                            LoginRegistration.SendLogoutRequest(clientSocket, user);//Call the method that collects the logged in users
-                            LoginRegistration.HandleLogoutResponse(clientSocket);// Call the method that displays logged in 
+                            LoginRegistration.SendLogoutRequest(clientSocket, user);
+                            LoginRegistration.HandleLogoutResponse(clientSocket);
                             break;
 
                         case "^privat":
-
+                            LoginRegistration.SendConnectedClientsListRequest(clientSocket);
+                            LoginRegistration.HandleConnectedClientsResponse(clientSocket);
                             {
                                 string? toUsername;
                                 string? message;
 
-                                Console.Write("Ange användarnamn: ");
+                                Console.Write("Vem vill du skicka till: ");
                                 toUsername = Console.ReadLine();
                                 // Get password from the user (you might want to handle password input securely):
-                                Console.Write("Ange meddelande: ");
+                                Console.Write("Meddelande: ");
                                 message = Console.ReadLine();
 
                                 // Formulate the message to be sent to the server for private messaging
@@ -97,7 +98,7 @@ namespace Client
                     Chattis.HandleServerResponse(clientSocket);
                 }
 
-                Thread.Sleep(200);
+                // Thread.Sleep(200);
             }
         }
 
@@ -132,6 +133,15 @@ namespace Client
 
                     // Handle the public message (print or do whatever is needed)
                     Console.WriteLine($"{fromUsername}: {chatMessage}");
+                    break;
+
+                case "LOGIN_ALERT":
+                    string usernameLoggedIn = parts[1];
+                    string alertMessage = parts[2];
+
+
+                    // Handle the public message (print or do whatever is needed)
+                    Console.WriteLine($"{usernameLoggedIn}: {alertMessage}");
                     break;
 
 
