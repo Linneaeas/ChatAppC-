@@ -26,6 +26,8 @@ namespace Client
             Console.WriteLine("Huvud Menu. Vad vill du göra?:");
             Console.WriteLine("1. Skapa konto");
             Console.WriteLine("2. Logga in");
+            Console.WriteLine("----------------------------");
+
             string? userInput = Console.ReadLine();
 
             // Process the user input and perform actions based on the selected option:
@@ -126,10 +128,14 @@ namespace Client
             Console.Write("Ange lösenord: ");
             existingUser.Password = Console.ReadLine();
 
-
-
             // Send the user information to the server for login with the separate method:
             SendLoginInformation(existingUser, clientSocket);
+
+            // Extract the recipient username and message
+
+
+
+
         }
 
         //
@@ -150,10 +156,6 @@ namespace Client
 
         //
         /*8.A + 10 RECIVE & PROCESS LOGIN RESPONSE FROM SERVER------------------------------------------------RECIVE & PROCESS LOGIN RESPONSE FROM SERVER  8.A+10 */
-
-
-
-        //
         public static void HandleLoginResponse(Socket clientSocket, User user)
         {
             // Read the server's response
@@ -173,7 +175,6 @@ namespace Client
                     HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
                     Chattis.ChattisMenu(clientSocket, user); //15.B
                     break;
-
 
                 case "LOGIN_FAILED":
                     Console.WriteLine("Login missslyckades, försök igen.");
@@ -202,7 +203,6 @@ namespace Client
                     Console.WriteLine("Du är nu utloggad");
                     MainMenu(clientSocket);
                     break;
-
 
                 default:
                     Console.WriteLine("Unexpected response from the server in HandleLogOutResponse.");
@@ -242,8 +242,6 @@ namespace Client
 
             string getConnectedClientsList = "GET_CONNECTED_CLIENTS";
             byte[] connectedClientsData = Encoding.UTF8.GetBytes(getConnectedClientsList);
-
-
             clientSocket.Send(connectedClientsData);
         }
 
@@ -255,12 +253,10 @@ namespace Client
             string getLogoutRequest = $"LOGOUT|{user.UserName}";
             byte[] logoutData = Encoding.UTF8.GetBytes(getLogoutRequest);
 
-
             clientSocket.Send(logoutData);
 
             HandleLogoutResponse(clientSocket);
         }
-
     }
 }
 

@@ -92,10 +92,44 @@ c. Added a case for SEND_MESSAGE and responses
 18. Moved DB related to it's own file. 
 
 
-Justee: Tell that if a user disconneccts it schould be marked as a logout in the server? 
+19. Server
+Created dictonary to store socketUsernames
+Created an if statement in case SEND_MESSAGE_PRIVATE:
+  if (socketUserNames.ContainsKey(toUsername))
+                {
+                    Socket clientRecipient = socketUserNames[toUsername];
+                    clientRecipient.Send(responseData);
+                }
+
+
+
+				Client:
+I While loopen la till ett if statement:
+  if (Console.KeyAvailable) //19
+The end of the loop:   if (clientSocket.Available != 0)
+                {
+                    Chattis.HandleServerResponse(clientSocket);
+                }
+
+                Thread.Sleep(200);
+Server:
+		     if (read == 0)
+                    {
+                        Console.WriteLine("A client has disconnected");
+                        continue;
+                    } 
+
+
+
+
+Justee:  if a user disconneccts it schould be marked as a logout in the server? 
 
 
 NEXT STEP:
+
+LONG POLLING?? 
+
+
 First check what's added and what you think about the call commands. 
 1. Show "this person joined" to everyone when a user logs in. 
 
@@ -109,13 +143,13 @@ OK  Show Logged in users-call the connected users list in the menu option.
 Loopa igenom connected clients list skicka medd till dem,  kalla pa funktion i Login successfull -Ta emot svar i clienten.
   
 
-WE only have one thread thats why only one thin at once
-
 
 Functionality Storage: 
 Create a variable called "privateMessages" with a parameter of which 2 users it schould be saved to.(?)Send the messages to the server that handles the storage in mongodb. 
 Same thing with "publicMessages" thats saved to all users. 
 
+
+Thread on the client?: Whatever comes down print it to the user/s. 
 
 
 Everytime someone enters the chatroom, server needs to send the last 30 messeges of that room->the client needs to recive them and display them. 

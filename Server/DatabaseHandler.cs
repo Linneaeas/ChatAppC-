@@ -77,6 +77,28 @@ public class DatabaseHandler
         {
             Console.WriteLine($"Invalid private message: The sender username '{fromUsername}' does not exist.");
         }
-    }
-}
 
+    }
+
+    public static void InsertPublicMessage(string fromUsername, string chatMessage)
+    {
+        // Check if the sender username exists in the database
+        if (IsUsernameExists(fromUsername))
+        // Check if the receiver username exists in the database
+        {
+            var document = new BsonDocument
+            {
+                { "from", fromUsername },
+
+                { "chatMessage", chatMessage }
+            };
+            messagesCollection?.InsertOne(document);
+            Console.WriteLine($"Message {chatMessage} from {fromUsername} inserted into MongoDB.");
+        }
+        else
+        {
+            Console.WriteLine($"Invalid public message");
+        }
+    }
+
+}

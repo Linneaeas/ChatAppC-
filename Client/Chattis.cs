@@ -10,18 +10,23 @@ namespace Client
     {
         public static void ChattisMenu(Socket clientSocket, User user)
         {
+            Console.WriteLine("----------------------------");
             Console.WriteLine("Chattis Meny:");
             Console.WriteLine("Visa denna meny igen, skriv: ^meny");
             Console.WriteLine("Visa inloggade användare, skriv: ^inloggade");
             Console.WriteLine("Logga ut, skriv: ^loggaut");
             Console.WriteLine("Skicka meddelande till alla skriv: alla följt av meddelandet");
             Console.WriteLine("Skicka ett privat meddelande skriv: privat användarnamnet följt av meddelandet");
+            Console.WriteLine("----------------------------");
 
             while (true)
             {
-                string? userInput = Console.ReadLine();
 
+                if (Console.KeyAvailable) //19
                 {
+                    string? userInput = Console.ReadLine();
+
+
                     switch (userInput)
                     {
                         case "^meny":
@@ -38,53 +43,61 @@ namespace Client
                             LoginRegistration.HandleLogoutResponse(clientSocket);// Call the method that displays logged in 
                             break;
 
+                        case "^privat":
 
-                        // Inside the default case in the switch statement
-                        default:
-                            // Check if the input starts with "send all"
-                            if (userInput.StartsWith("alla "))
                             {
-                                // Extract the message to be sent to all users
-                                string message = userInput.Substring("alla ".Length).Trim();
+                                string? toUsername;
+                                string? message;
 
-                                // Formulate the message to be sent to the server for broadcasting
-                                string sendMessageRequest = $"SEND_MESSAGE|alla|{message}";
+                                Console.Write("Ange användarnamn: ");
+                                toUsername = Console.ReadLine();
+                                // Get password from the user (you might want to handle password input securely):
+                                Console.Write("Ange meddelande: ");
+                                message = Console.ReadLine();
+
+                                // Formulate the message to be sent to the server for private messaging
+                                string sendMessageRequest = $"SEND_MESSAGE_PRIVATE|{user.UserName}|{toUsername}|{message}";
 
                                 // Convert the message to bytes and send it to the server
                                 byte[] data = Encoding.UTF8.GetBytes(sendMessageRequest);
                                 clientSocket.Send(data);
                             }
 
-                            // Check if the input starts with "send"
-                            else if (userInput.StartsWith("privat "))
+                            break;
+
+
+                        // Inside the default case in the switch statement
+                        default:
+                            // Check if the input starts with "send all"
+                            if (userInput.StartsWith("alla "))
                             {
                                 // Extract the recipient username and message
-                                string[] parts = userInput.Split(' ', 3);
-                                if (parts.Length == 3)
+                                string[] parts = userInput.Split(' ', 2);
+                                if (parts.Length == 2)
                                 {
-                                    string toUsername = parts[1];
-                                    string message = parts[2];
+
+                                    string message = parts[1];
 
                                     // Formulate the message to be sent to the server for private messaging
-                                    string sendMessageRequest = $"SEND_MESSAGE_PRIVATE|{user.UserName}|{toUsername}|{message}";
+                                    string sendMessageRequest = $"SEND_MESSAGE_ALL|{user.UserName}|{message}";
 
                                     // Convert the message to bytes and send it to the server
                                     byte[] data = Encoding.UTF8.GetBytes(sendMessageRequest);
                                     clientSocket.Send(data);
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Invalid command format. Type ^meny for menu options.");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Invalid command. Type ^meny for menu options.");
                             }
                             break;
+
+
                     }
                 }
 
+                if (clientSocket.Available != 0)
+                {
+                    Chattis.HandleServerResponse(clientSocket);
+                }
+
+                Thread.Sleep(200);
             }
         }
 
@@ -109,13 +122,25 @@ namespace Client
                     string chatMessage = parts[3];
 
                     // Handle the private message (print or do whatever is needed)
-                    Console.WriteLine($"Private message from {fromUsername} to {toUsername}: {chatMessage}");
+                    Console.WriteLine($"Privat från {fromUsername} till {toUsername}: {chatMessage}");
                     break;
+
+                case "PUBLIC_MESSAGE_SENT":
+                    fromUsername = parts[1];
+                    chatMessage = parts[2];
+
+
+                    // Handle the public message (print or do whatever is needed)
+                    Console.WriteLine($"{fromUsername}: {chatMessage}");
+                    break;
+
 
                 default:
                     Console.WriteLine("Invalid response received in HandleServerResponse.");
                     break;
             }
         }
+
+
     }
 }

@@ -12,6 +12,8 @@ class Program
     // List to store all connected client sockets:
     //12.A
     static List<Socket> connectedClients = new List<Socket>();
+    static Dictionary<string, Socket> socketUserNames = new Dictionary<string, Socket>(); //19
+
     // List to store logged-in client usernames:
     //12.B
     static List<string> loggedInClients = new List<string>();
@@ -19,7 +21,6 @@ class Program
     // 2.A CREATE SERVER
     static void Main(string[] args)
     {
-
         DatabaseHandler.Initialize();
 
         // List to store connected client sockets:
@@ -63,6 +64,12 @@ class Program
                     // Read the incoming data from the client:
                     byte[] incoming = new byte[5000];
                     int read = client.Receive(incoming);
+
+                    if (read == 0)
+                    {
+                        Console.WriteLine("A client has disconnected");
+                        continue;
+                    }
                     // Convert the received bytes to a string message:
                     string message = System.Text.Encoding.UTF8.GetString(incoming, 0, read);
                     //Confirmation that the server recieved a message from client:
@@ -71,7 +78,7 @@ class Program
                     // Process the received message based on the protocol:
                     ProcessMessage(client, message);
                     // Send the connected clients list to each client: 
-                    //SendConnectedClientsList(client);//TOG BORT HARIFRAN FOR ATT ISTALLET KALLA PA DEN NAR MAN LOGGAR IN 15.D
+
                 }
             }
         }
@@ -85,7 +92,7 @@ class Program
         //Someone can not choose this sign inside their username/password its gonna break. If we got time we can put in some kind of "allowed signs"
 
         // Declare variables outside the switch block:
-        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
+        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse, sendPublicMessageResponse; //Added logoutResponse & chatmessage & sendMessageRespons
         byte[] responseData;
 
 
@@ -142,6 +149,8 @@ class Program
                     loginResponse = "LOGIN_SUCCESSFUL";
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
+
+                    socketUserNames[username] = client;
                 }
                 else
                 {
@@ -189,11 +198,36 @@ class Program
                 chatMessage = parts[3];
 
                 DatabaseHandler.InsertPrivateMessage(fromUsername, toUsername, chatMessage);
-                sendPrivateMessageResponse = "PRIVATE_MESSAGE_SENT";
+                sendPrivateMessageResponse = $"PRIVATE_MESSAGE_SENT|{fromUsername}|{toUsername}|{chatMessage}";
 
                 responseData = Encoding.UTF8.GetBytes(sendPrivateMessageResponse);
                 client.Send(responseData);
+
+                if (socketUserNames.ContainsKey(toUsername))
+                {
+                    Socket clientRecipient = socketUserNames[toUsername];
+                    clientRecipient.Send(responseData);
+                }
                 Console.WriteLine("PRIVATE_MESSAGE_SENT from server to client");
+                break;
+
+
+            case "SEND_MESSAGE_ALL":
+                fromUsername = parts[1];
+                chatMessage = parts[2];
+
+                DatabaseHandler.InsertPublicMessage(fromUsername, chatMessage);
+                sendPublicMessageResponse = $"PUBLIC_MESSAGE_SENT|{fromUsername}|{chatMessage}";
+
+                responseData = Encoding.UTF8.GetBytes(sendPublicMessageResponse);
+                client.Send(responseData);
+
+                foreach (Socket clientSocket in connectedClients)
+                {
+                    clientSocket.Send(responseData);
+                }
+
+                Console.WriteLine("PUBLIC_MESSAGE_SENT from server to client");
                 break;
 
             default:
