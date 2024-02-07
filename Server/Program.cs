@@ -161,7 +161,9 @@ class Program
 
                     Console.WriteLine($"Login successful for user: {username}");
                     socketUserNames[username] = client;
+
                     DatabaseHandler.GetMessagesAsString(client, username);
+
 
                 }
                 else

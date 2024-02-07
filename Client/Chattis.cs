@@ -95,7 +95,7 @@ namespace Client
                     Chattis.HandleServerResponse(clientSocket);
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
         }
 
@@ -134,14 +134,13 @@ namespace Client
                 case "LOGIN_ALERT":
                     string usernameLoggedIn = parts[1];
                     string alertMessage = parts[2];
-
-
-                    // Handle the public message (print or do whatever is needed)
                     Console.WriteLine($"{usernameLoggedIn}: {alertMessage}");
                     break;
 
+
+
                 default:
-                    Console.WriteLine("Invalid response received in HandleServerResponse. ");
+                    Console.WriteLine("Invalid response received in HandleServerResponse. " + sendPrivateMessageResponse);
                     break;
             }
         }

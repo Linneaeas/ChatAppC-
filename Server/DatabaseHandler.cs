@@ -107,7 +107,7 @@ public class DatabaseHandler
             Builders<BsonDocument>.Filter.Eq("from", username)
         );
 
-        var sort = Builders<BsonDocument>.Sort.Descending("_id");
+        var sort = Builders<BsonDocument>.Sort.Ascending("_id");
 
         var messages = messagesCollection?.Find(filter).Sort(sort).Limit(30).ToList();
 
@@ -121,7 +121,7 @@ public class DatabaseHandler
                 var toUser = message.Contains("to") ? message["to"].AsString : "Everyone";
                 var chatMessage = message["chatMessage"].AsString;
 
-                var formattedMessage = $"From{fromUser};To{toUser};Mess{chatMessage}";
+                var formattedMessage = $"{fromUser};{toUser};{chatMessage};";
                 messageList.Add(formattedMessage);
             }
 
@@ -133,11 +133,10 @@ public class DatabaseHandler
 
             Console.WriteLine($"Last 30 messages for user {username} retrieved");
 
-            /* byte[] historyData;
-             allMessages = $"MESSAGE_HISTORY|{username}|{allMessages}";
-             historyData = Encoding.UTF8.GetBytes(allMessages);
-             client.Send(historyData);
- */
+            byte[] historyData;
+            allMessages = $"MESSAGE_HISTORY|{allMessages}";
+            historyData = Encoding.UTF8.GetBytes(allMessages);
+            client.Send(historyData);
 
             return allMessages;
         }
@@ -147,5 +146,4 @@ public class DatabaseHandler
             return string.Empty;
         }
     }
-
 }

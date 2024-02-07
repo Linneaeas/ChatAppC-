@@ -122,15 +122,9 @@ Server:
 
 
 
-Justee:  if a user disconneccts it schould be marked as a logout in the server? 
 
 
-NEXT STEP:
 
-LONG POLLING?? 
-
-
-First check what's added and what you think about the call commands. 
 1. Show "this person joined" to everyone when a user logs in. 
 
 3. Show "this person left" to everyone when a user logs out/leave. 
@@ -150,7 +144,7 @@ Same thing with "publicMessages" thats saved to all users.
 
 
 Thread on the client?: Whatever comes down print it to the user/s. 
-
+  if a user disconneccts it schould be marked as a logout in the server? 
 
 Everytime someone enters the chatroom, server needs to send the last 30 messeges of that room->the client needs to recive them and display them. 
 
@@ -165,10 +159,10 @@ OK Registrera användare (med namn och lösenord minst)
 OK Logga in på chat-appen (med namn och lösenord)
  Informera alla användare som redan är inloggade (e.g. <user> har loggat in!)
 
-Skicka meddelande till andra användare som också är inloggade
+OK Skicka meddelande till andra användare som också är inloggade
 	- Alla ser allas meddelanden
 
-Skicka privat meddelande till en annan användare
+OK Skicka privat meddelande till en annan användare
 	- Ingen annan kan se meddelandet
 
 Se historik på meddelande (upp till 30 meddelanden)

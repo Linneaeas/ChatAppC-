@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 
 namespace Client
 //
@@ -163,7 +164,7 @@ namespace Client
             {
                 case "LOGIN_SUCCESSFUL":
                     Console.WriteLine("Välkommen till Chattis!");
-
+                    HandleHistoryMessageResponse(clientSocket);
                     SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users// 15.D
                     HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
                     Chattis.ChattisMenu(clientSocket, user); //15.B
@@ -224,7 +225,7 @@ namespace Client
             }
             else
             {
-                Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse.");
+                Console.WriteLine("Unexpected response from the server in HandleConnectedClientsResponse: " + connectedClientsResponse);
             }
         }
 
@@ -250,6 +251,31 @@ namespace Client
             clientSocket.Send(logoutData);
 
             HandleLogoutResponse(clientSocket);
+        }
+
+        public static void HandleHistoryMessageResponse(Socket clientSocket)
+        {
+            byte[] historyData = new byte[5000];
+            int responseLength = clientSocket.Receive(historyData);
+            string historyResponse = Encoding.UTF8.GetString(historyData, 0, responseLength);
+
+            string[] parts = historyResponse.Split('|');
+            string messageCase = parts[0];
+            string messageHistory = parts[1];
+
+            string[] messageList = messageHistory.Split('/');
+
+
+            foreach (string eachMessage in messageList)
+            {
+                string[] eachMessageList = eachMessage.Split(';');
+                string historyFromUser = eachMessageList[0];
+                string historyToUser = eachMessageList[1];
+                string historyMessage = eachMessageList[2];
+
+                Console.WriteLine(historyFromUser + ": " + historyMessage);
+            }
+
         }
 
     }
