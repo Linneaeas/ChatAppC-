@@ -100,5 +100,52 @@ public class DatabaseHandler
             Console.WriteLine($"Invalid public message");
         }
     }
+    public static string GetMessagesAsString(Socket client, string username)
+    {
+        var filter = Builders<BsonDocument>.Filter.Or(
+            Builders<BsonDocument>.Filter.Eq("to", username),
+            Builders<BsonDocument>.Filter.Eq("from", username)
+        );
+
+        var sort = Builders<BsonDocument>.Sort.Descending("_id");
+
+        var messages = messagesCollection?.Find(filter).Sort(sort).Limit(30).ToList();
+
+        if (messages != null && messages.Count > 0)
+        {
+            // Extract and concatenate messages into a single string
+            List<string> messageList = new List<string>();
+            foreach (var message in messages)
+            {
+                var fromUser = message["from"].AsString;
+                var toUser = message.Contains("to") ? message["to"].AsString : "Everyone";
+                var chatMessage = message["chatMessage"].AsString;
+
+                var formattedMessage = $"From{fromUser};To{toUser};Mess{chatMessage}";
+                messageList.Add(formattedMessage);
+            }
+
+            // Concatenate all messages into a single string using a delimiter
+            var allMessages = string.Join("/", messageList);
+
+            // Log all messages at once
+            Console.WriteLine($"All messages for user {username}: {allMessages}");
+
+            Console.WriteLine($"Last 30 messages for user {username} retrieved");
+
+            /* byte[] historyData;
+             allMessages = $"MESSAGE_HISTORY|{username}|{allMessages}";
+             historyData = Encoding.UTF8.GetBytes(allMessages);
+             client.Send(historyData);
+ */
+
+            return allMessages;
+        }
+        else
+        {
+            Console.WriteLine($"No messages found for user {username}.");
+            return string.Empty;
+        }
+    }
 
 }

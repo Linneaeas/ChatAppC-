@@ -106,7 +106,6 @@ class Program
                 username = parts[1];
                 password = parts[2];
 
-
                 // Check if the username already exists in the MongoDB collection:
                 if (DatabaseHandler.IsUsernameExists(username))//11.B
                 {
@@ -144,33 +143,25 @@ class Program
                     responseData = Encoding.UTF8.GetBytes(loginResponse);
                     client.Send(responseData);
 
+
                     Console.WriteLine($"Login successful for user: {username}");
 
                     sendLoginAlert = $"LOGIN_ALERT|{username}|har loggat in";
-
                     responseData = Encoding.UTF8.GetBytes(sendLoginAlert);
-
 
                     foreach (Socket clientSocket in connectedClients)
                     {
                         clientSocket.Send(responseData);
                     }
+
                     Console.WriteLine("LOGIN_ALERT from server to client");
 
                     connectedClients.Add(client);//12.A
                     loggedInClients.Add(username);//12.B
 
-                    //Displays in the server terminal:
-
-                    // Broadcast the login message to all connected clients:
-
-
-
                     Console.WriteLine($"Login successful for user: {username}");
                     socketUserNames[username] = client;
-
-
-
+                    DatabaseHandler.GetMessagesAsString(client, username);
 
                 }
                 else
@@ -238,8 +229,8 @@ class Program
                 chatMessage = parts[2];
 
                 DatabaseHandler.InsertPublicMessage(fromUsername, chatMessage);
-                sendPublicMessageResponse = $"PUBLIC_MESSAGE_SENT|{fromUsername}|{chatMessage}";
 
+                sendPublicMessageResponse = $"PUBLIC_MESSAGE_SENT|{fromUsername}|{chatMessage}";
                 responseData = Encoding.UTF8.GetBytes(sendPublicMessageResponse);
                 client.Send(responseData);
 
@@ -255,14 +246,17 @@ class Program
                 Console.WriteLine("Invalid message received in ProcessMessage.");
                 break;
         }
-    }
 
-    //12.D
-    static void SendConnectedClientsList(Socket client)
-    {
-        string connectedClientsList = string.Join(",", loggedInClients);
-        byte[] connectedData = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
-        client.Send(connectedData);
-    }
 
+        //12.D
+        static void SendConnectedClientsList(Socket client)
+        {
+            string connectedClientsList = string.Join(",", loggedInClients);
+            byte[] connectedData = Encoding.UTF8.GetBytes($"CONNECTED_CLIENTS|{connectedClientsList}");
+            client.Send(connectedData);
+        }
+
+
+
+    }
 }

@@ -32,6 +32,7 @@ namespace Client
 
             // Wait for user input before closing the console
             Console.ReadLine();
+
         }
     }
 }

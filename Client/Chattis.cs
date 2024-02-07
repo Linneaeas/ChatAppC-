@@ -52,7 +52,6 @@ namespace Client
 
                                 Console.Write("Vem vill du skicka till: ");
                                 toUsername = Console.ReadLine();
-                                // Get password from the user (you might want to handle password input securely):
                                 Console.Write("Meddelande: ");
                                 message = Console.ReadLine();
 
@@ -88,8 +87,6 @@ namespace Client
                                 }
                             }
                             break;
-
-
                     }
                 }
 
@@ -98,7 +95,7 @@ namespace Client
                     Chattis.HandleServerResponse(clientSocket);
                 }
 
-                // Thread.Sleep(200);
+                Thread.Sleep(500);
             }
         }
 
@@ -126,10 +123,9 @@ namespace Client
                     Console.WriteLine($"Privat från {fromUsername} till {toUsername}: {chatMessage}");
                     break;
 
-                case "PUBLIC_MESSAGE_SENT":
+                case "PUBLIC_MESSAGE_SENT": //kan vara denna som visas i client
                     fromUsername = parts[1];
                     chatMessage = parts[2];
-
 
                     // Handle the public message (print or do whatever is needed)
                     Console.WriteLine($"{fromUsername}: {chatMessage}");
@@ -144,9 +140,8 @@ namespace Client
                     Console.WriteLine($"{usernameLoggedIn}: {alertMessage}");
                     break;
 
-
                 default:
-                    Console.WriteLine("Invalid response received in HandleServerResponse.");
+                    Console.WriteLine("Invalid response received in HandleServerResponse. ");
                     break;
             }
         }

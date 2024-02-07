@@ -107,6 +107,7 @@ namespace Client
                     break;
                 default:
                     Console.WriteLine("Unexpected response from the server in HandleCreateAccountResponse.");
+                    MainMenu(clientSocket);
                     break;
             }
         }
@@ -130,8 +131,6 @@ namespace Client
 
             // Send the user information to the server for login with the separate method:
             SendLoginInformation(existingUser, clientSocket);
-
-
         }
 
         //
@@ -163,13 +162,12 @@ namespace Client
             switch (loginResponse)
             {
                 case "LOGIN_SUCCESSFUL":
-
-                    // Broadcast the "username logged in" message to all connected clients
-                    //Call function to show the 30 last messages connected to that user
                     Console.WriteLine("Välkommen till Chattis!");
+
                     SendConnectedClientsListRequest(clientSocket);//Call the method that collects the logged in users// 15.D
                     HandleConnectedClientsResponse(clientSocket);//Call the method that displays the logged in users
                     Chattis.ChattisMenu(clientSocket, user); //15.B
+
                     break;
 
                 case "LOGIN_FAILED":
@@ -179,10 +177,10 @@ namespace Client
 
                 default:
                     Console.WriteLine("Unexpected response from the server in HandleLoginResponse.");
+                    MainMenu(clientSocket);
                     break;
             }
         }
-
 
         //16.B ADDED HANDLE LOGOUT RESPONSE
         public static void HandleLogoutResponse(Socket clientSocket)
@@ -253,6 +251,7 @@ namespace Client
 
             HandleLogoutResponse(clientSocket);
         }
+
     }
 }
 
