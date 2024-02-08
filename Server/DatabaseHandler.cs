@@ -10,11 +10,8 @@ namespace Server;
 
 public class DatabaseHandler
 {
-    //6.E Set up MongoDB Connection:
-    //The code establishes a connection to a MongoDB server running on localhost at port 27017.It selects the database named "ChatApp" and gets a collection named "users" as an IMongoCollection<BsonDocument>.
     private static IMongoCollection<BsonDocument>? usersCollection;
     private static IMongoCollection<BsonDocument>? messagesCollection;
-
     public static void Initialize()
     {
         MongoClient mongoClient = new MongoClient("mongodb://localhost:27017");
@@ -53,10 +50,8 @@ public class DatabaseHandler
 
     public static void InsertPrivateMessage(string fromUsername, string toUsername, string chatMessage)
     {
-        // Check if the sender username exists in the database
         if (IsUsernameExists(fromUsername))
         {
-            // Check if the receiver username exists in the database
             if (IsUsernameExists(toUsername))
             {
                 var document = new BsonDocument
@@ -77,14 +72,11 @@ public class DatabaseHandler
         {
             Console.WriteLine($"Invalid private message: The sender username '{fromUsername}' does not exist.");
         }
-
     }
 
     public static void InsertPublicMessage(string fromUsername, string chatMessage)
     {
-        // Check if the sender username exists in the database
         if (IsUsernameExists(fromUsername))
-        // Check if the receiver username exists in the database
         {
             var document = new BsonDocument
             {
@@ -100,7 +92,8 @@ public class DatabaseHandler
             Console.WriteLine($"Invalid public message");
         }
     }
-    public static string GetMessagesAsString(Socket client, string username)
+
+    public static string GetMessageHistory(Socket client, string username)
     {
         var filter = Builders<BsonDocument>.Filter.Or(
             Builders<BsonDocument>.Filter.Eq("to", username),
@@ -113,7 +106,6 @@ public class DatabaseHandler
 
         if (messages != null && messages.Count > 0)
         {
-            // Extract and concatenate messages into a single string
             List<string> messageList = new List<string>();
             foreach (var message in messages)
             {
@@ -121,16 +113,13 @@ public class DatabaseHandler
                 var toUser = message.Contains("to") ? message["to"].AsString : "Everyone";
                 var chatMessage = message["chatMessage"].AsString;
 
-                var formattedMessage = $"{fromUser};{toUser};{chatMessage};";
+                var formattedMessage = $"{fromUser};{toUser};{chatMessage}";
                 messageList.Add(formattedMessage);
             }
 
-            // Concatenate all messages into a single string using a delimiter
             var allMessages = string.Join("/", messageList);
 
-            // Log all messages at once
             Console.WriteLine($"All messages for user {username}: {allMessages}");
-
             Console.WriteLine($"Last 30 messages for user {username} retrieved");
 
             byte[] historyData;
@@ -142,8 +131,11 @@ public class DatabaseHandler
         }
         else
         {
+            var defaultMessage = $"MESSAGE_HISTORY|No messages to show";
+            byte[] defaultData = Encoding.UTF8.GetBytes(defaultMessage);
+            client.Send(defaultData);
             Console.WriteLine($"No messages found for user {username}.");
-            return string.Empty;
+            return defaultMessage;
         }
     }
 }

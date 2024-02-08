@@ -84,98 +84,47 @@ b. Client: Added HandleLogOutResponse to handle the response from the server.
 c. Server: Added a case&response for "LOGOUT" to send a response to the client & removes the user from the lists of logged in users. 
 d. Client: Call the SendLogoutRequest in the menu option for Logout. 
 
-17. Added messageCollection to MongoDB
+17. Send & recieve public and private messages
+Added messageCollection to MongoDB
 a. Intitilize 
 b. Created function to add message(woth fromUser& toUSer) to the Database
 c. Added a case for SEND_MESSAGE and responses
 
 18. Moved DB related to it's own file. 
 
-
-19. Server
-Created dictonary to store socketUsernames
-Created an if statement in case SEND_MESSAGE_PRIVATE:
-  if (socketUserNames.ContainsKey(toUsername))
-                {
-                    Socket clientRecipient = socketUserNames[toUsername];
-                    clientRecipient.Send(responseData);
-                }
-
-
-
-				Client:
-I While loopen la till ett if statement:
-  if (Console.KeyAvailable) //19
-The end of the loop:   if (clientSocket.Available != 0)
-                {
-                    Chattis.HandleServerResponse(clientSocket);
-                }
-
-                Thread.Sleep(200);
+19. Added Login Alert to be sent to all users
 Server:
-		     if (read == 0)
-                    {
-                        Console.WriteLine("A client has disconnected");
-                        continue;
-                    } 
+Created dictonary to store socketUsernames
+Created an if statement in case SEND_MESSAGE_PRIVATE
+Client:
+I While loopen la till ett if statement:
+  if (Console.KeyAvailable) 
+
+21. Getting messagehistory for a specific user and display it in the server console. 
+21. Send history to client and Display Message history on Login.
+23. Added checks so the program has an option if there is no history.
 
 
 
-
-
-
-
-1. Show "this person joined" to everyone when a user logs in. 
-
-3. Show "this person left" to everyone when a user logs out/leave. 
-4. Functionality for public messages. (showing "you" on the person who send it and username for everyone else)
-5. Functionality for private messages.
-
-OK Show this menu function-call that in the menu option for show menu.
-OK  Show Logged in users-call the connected users list in the menu option.
- 
-Loopa igenom connected clients list skicka medd till dem,  kalla pa funktion i Login successfull -Ta emot svar i clienten.
-  
-
-
-Functionality Storage: 
-Create a variable called "privateMessages" with a parameter of which 2 users it schould be saved to.(?)Send the messages to the server that handles the storage in mongodb. 
-Same thing with "publicMessages" thats saved to all users. 
-
-
-Thread on the client?: Whatever comes down print it to the user/s. 
-  if a user disconneccts it schould be marked as a logout in the server? 
-
-Everytime someone enters the chatroom, server needs to send the last 30 messeges of that room->the client needs to recive them and display them. 
-
-Each time a message is sent, it updates the server with the new message. The message that is 31 messages back will get deleted for each new message in that room. 
-
-spara medd till anvandare-varje anv har en egen list. Nar man skickar proivat mmedd sparar man medd privat pa den anvandaren.
-spara allt i en collection-variabel kopplar till anvandare. Globalt el privat- om privat pekar till anv med ex id. 
-
+UPPGIFT:
 
 OK Registrera användare (med namn och lösenord minst)
-
 OK Logga in på chat-appen (med namn och lösenord)
- Informera alla användare som redan är inloggade (e.g. <user> har loggat in!)
+
+OK Informera alla användare som redan är inloggade (e.g. <user> har loggat in!)
 
 OK Skicka meddelande till andra användare som också är inloggade
-	- Alla ser allas meddelanden
+OK Alla ser allas meddelanden
 
 OK Skicka privat meddelande till en annan användare
-	- Ingen annan kan se meddelandet
+OK Ingen annan kan se meddelandet
 
-Se historik på meddelande (upp till 30 meddelanden)
-	- Historiken visas så fort man loggar in
-	- Globala och privata meddelanden skall visas
+OK Se historik på meddelande (upp till 30 meddelanden)
+OK Historiken visas så fort man loggar in
+OK Globala och privata meddelanden skall visas
 
 IF WE GOT TIME:
 - The character "|" can't be allowed in the user inputs since the system will split everything
 - när man får upp listan på alla som är inloggade, exkludera den currenuser 
-
-I server - säg att alla inloggade ska få meddelandet om vem som loggat in-loopa igenom connectedclients
-	- ta emot meddelande i klienten
-
-För meddelanden - samma princip som för ’senduserinformation’
-
-server tar emot meddelande - skickar tillbaka meddelande och skickar med username - i client-välj att utesluta eget namn
+-If a user disconneccts it schould be handled as a logout 
+-Williams notes
