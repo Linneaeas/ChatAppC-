@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -97,7 +95,8 @@ public class DatabaseHandler
     {
         var filter = Builders<BsonDocument>.Filter.Or(
             Builders<BsonDocument>.Filter.Eq("to", username),
-            Builders<BsonDocument>.Filter.Eq("from", username)
+            Builders<BsonDocument>.Filter.Eq("from", username),
+            Builders<BsonDocument>.Filter.Not(Builders<BsonDocument>.Filter.Exists("to"))
         );
 
         var sort = Builders<BsonDocument>.Sort.Ascending("_id");

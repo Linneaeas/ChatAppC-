@@ -61,14 +61,15 @@ class Program
     static void ProcessMessage(Socket client, string message)
     {
         string[] parts = message.Split('|');
-        string username, password, createAccountResponse, loginResponse, logoutResponse, chatMessage, sendPrivateMessageResponse, sendPublicMessageResponse, sendLoginAlert;
         byte[] responseData;
 
         switch (parts[0])
         {
             case "CREATE_ACCOUNT":
-                username = parts[1];
-                password = parts[2];
+                string username = parts[1];
+                string password = parts[2];
+                string createAccountResponse;
+
                 if (DatabaseHandler.IsUsernameExists(username))
                 {
                     createAccountResponse = "ACCOUNT_CREATION_FAILED";
@@ -89,6 +90,8 @@ class Program
             case "LOGIN":
                 username = parts[1];
                 password = parts[2];
+                string loginResponse;
+
                 if (DatabaseHandler.AuthenticateUser(username, password))
                 {
                     loginResponse = "LOGIN_SUCCESSFUL";
@@ -97,7 +100,7 @@ class Program
 
                     Console.WriteLine($"Login successful for user: {username}");
 
-                    sendLoginAlert = $"LOGIN_ALERT|{username}|har loggat in";
+                    string sendLoginAlert = $"LOGIN_ALERT|{username}|har loggat in";
                     responseData = Encoding.UTF8.GetBytes(sendLoginAlert);
 
                     foreach (Socket clientSocket in connectedClients)
@@ -125,6 +128,7 @@ class Program
                 break;
 
             case "LOGOUT":
+                string logoutResponse;
                 if (parts.Length == 2)
                 {
                     username = parts[1];
@@ -149,7 +153,8 @@ class Program
             case "SEND_MESSAGE_PRIVATE":
                 string fromUsername = parts[1];
                 string toUsername = parts[2];
-                chatMessage = parts[3];
+                string chatMessage = parts[3];
+                string sendPrivateMessageResponse;
 
                 DatabaseHandler.InsertPrivateMessage(fromUsername, toUsername, chatMessage);
                 sendPrivateMessageResponse = $"PRIVATE_MESSAGE_SENT|{fromUsername}|{toUsername}|{chatMessage}";
@@ -162,13 +167,14 @@ class Program
                     Socket clientRecipient = socketUserNames[toUsername];
                     clientRecipient.Send(responseData);
                 }
+
                 Console.WriteLine("PRIVATE_MESSAGE_SENT from server to client");
                 break;
-
 
             case "SEND_MESSAGE_ALL":
                 fromUsername = parts[1];
                 chatMessage = parts[2];
+                string sendPublicMessageResponse;
 
                 DatabaseHandler.InsertPublicMessage(fromUsername, chatMessage);
 

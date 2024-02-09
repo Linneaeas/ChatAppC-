@@ -22,7 +22,7 @@ namespace Client
             clientSocket.Connect(serverEndPoint);
             Console.WriteLine("Connected to the server.");
 
-            LoginRegistration.MainMenu(clientSocket);
+            Menu.MainMenu(clientSocket);
 
             Console.ReadLine();
         }

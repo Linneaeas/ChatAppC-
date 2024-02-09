@@ -1,3 +1,13 @@
+IMPROVEMENTS AFTER FEEDBACK:
+Changed strings declarations to exists in smaller scopes in server program
+Created a SendPrivateMessage function to have the logic instead of being inside of the switch in Chattis
+Separated related functions into individual files.
+Changed default, not necassary to write "alla" before sending a public message.
+Small details for ex. "username: har loggat in", we took away the : 
+
+
+
+
 1. CREATE PROJECT
 a. Create a folder to the project.
 b. Create folders inside the project: Client & Server
@@ -105,6 +115,9 @@ I While loopen la till ett if statement:
 23. Added checks so the program has an option if there is no history.
 
 
+Added improvments from feedback (details in top of this doc)
+
+
 
 UPPGIFT:
 
@@ -129,54 +142,3 @@ IF WE GOT TIME:
 -If a user disconneccts it schould be handled as a logout 
 -Williams notes
 
-
-ENUM example
-
-        public enum ServerResponseType
-        {
-            PRIVATE_MESSAGE_SENT,
-            PUBLIC_MESSAGE_SENT,
-            LOGIN_ALERT,
-            INVALID_RESPONSE
-        }
-        public static void HandleServerResponse(Socket clientSocket)
-        {
-            byte[] responseBytes = new byte[5000];
-            int responseLength = clientSocket.Receive(responseBytes);
-            string serverResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
-            string[] parts = serverResponse.Split('|');
-
-            ServerResponseType responseType;
-            if (Enum.TryParse(parts[0], out responseType))
-            {
-                switch (responseType)
-                {
-                    case ServerResponseType.PRIVATE_MESSAGE_SENT:
-                        string fromUsername = parts[1];
-                        string toUsername = parts[2];
-                        string chatMessage = parts[3];
-                        Console.WriteLine($"Privat från {fromUsername} till {toUsername}: {chatMessage}");
-                        break;
-
-                    case ServerResponseType.PUBLIC_MESSAGE_SENT:
-                        fromUsername = parts[1];
-                        chatMessage = parts[2];
-                        Console.WriteLine($"{fromUsername}: {chatMessage}");
-                        break;
-
-                    case ServerResponseType.LOGIN_ALERT:
-                        string usernameLoggedIn = parts[1];
-                        string alertMessage = parts[2];
-                        Console.WriteLine($"{usernameLoggedIn}: {alertMessage}");
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid response received in HandleServerResponse. " + serverResponse);
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid response type received in HandleServerResponse. " + parts[0]);
-            }
-        }
