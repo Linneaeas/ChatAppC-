@@ -128,3 +128,55 @@ IF WE GOT TIME:
 - när man får upp listan på alla som är inloggade, exkludera den currenuser 
 -If a user disconneccts it schould be handled as a logout 
 -Williams notes
+
+
+ENUM example
+
+        public enum ServerResponseType
+        {
+            PRIVATE_MESSAGE_SENT,
+            PUBLIC_MESSAGE_SENT,
+            LOGIN_ALERT,
+            INVALID_RESPONSE
+        }
+        public static void HandleServerResponse(Socket clientSocket)
+        {
+            byte[] responseBytes = new byte[5000];
+            int responseLength = clientSocket.Receive(responseBytes);
+            string serverResponse = Encoding.UTF8.GetString(responseBytes, 0, responseLength);
+            string[] parts = serverResponse.Split('|');
+
+            ServerResponseType responseType;
+            if (Enum.TryParse(parts[0], out responseType))
+            {
+                switch (responseType)
+                {
+                    case ServerResponseType.PRIVATE_MESSAGE_SENT:
+                        string fromUsername = parts[1];
+                        string toUsername = parts[2];
+                        string chatMessage = parts[3];
+                        Console.WriteLine($"Privat från {fromUsername} till {toUsername}: {chatMessage}");
+                        break;
+
+                    case ServerResponseType.PUBLIC_MESSAGE_SENT:
+                        fromUsername = parts[1];
+                        chatMessage = parts[2];
+                        Console.WriteLine($"{fromUsername}: {chatMessage}");
+                        break;
+
+                    case ServerResponseType.LOGIN_ALERT:
+                        string usernameLoggedIn = parts[1];
+                        string alertMessage = parts[2];
+                        Console.WriteLine($"{usernameLoggedIn}: {alertMessage}");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid response received in HandleServerResponse. " + serverResponse);
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid response type received in HandleServerResponse. " + parts[0]);
+            }
+        }

@@ -120,5 +120,31 @@ namespace Client
                     break;
             }
         }
+
+        /*   public static void SendPrivateMessage(Socket clientSocket)
+           {
+               LoginRegistration.SendConnectedClientsListRequest(clientSocket);
+               LoginRegistration.HandleConnectedClientsResponse(clientSocket);
+               {
+                   string? toUsername;
+                   string? message;
+
+                   Console.Write("Vem vill du skicka till: ");
+                   toUsername = Console.ReadLine();
+                   Console.Write("Meddelande: ");
+                   message = Console.ReadLine();
+
+                   string sendMessageRequest = $"SEND_MESSAGE_PRIVATE|{user.UserName}|{toUsername}|{message}";
+
+                   byte[] data = Encoding.UTF8.GetBytes(sendMessageRequest);
+                   clientSocket.Send(data);
+               }
+           }*/
+
+
     }
 }
+
+
+
+
